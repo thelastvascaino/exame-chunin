@@ -1,0 +1,62 @@
+TCA – INFO25
+Depois do desempenho em 2024, a ONU (Organização dos Ninjas Unidos) pediu
+para a melhor turma de Informática criar um sistema de cadastro de missões ninjas
+para Konoha. Como a turma de INFO24 estava muito ocupada, a missão foi passada
+para a INFO25. Chegou o grande momento da turma demonstrar seu real valor e para
+tal devem desenvolver um sistema que organize os ninjas, suas aldeias, seus jutsus e
+as missões que serão realizadas.
+Em uma vila de ninjas, existem personagens que se diferenciam por vários fatores.
+Cada ninja possui:
+• Um nome;
+• Um nível hierárquico (por exemplo: Estudante da Academia, Genin, Chunin,
+Jounin, Kage, ANBU, Tokubetsu Jounin);
+• Uma quantidade de chakra disponível (valor inteiro entre 0 e 100);
+• Um clã de origem, que pode ter habilidades próprias transmitidas entre seus
+membros;
+• Uma afinidade com um elemento principal (como Fogo, Água, Terra, Vento,
+Raio ou até elementos compostos) e pode dominar outros elementos além da
+afinidade;
+• Um conjunto de jutsus que sabe executar, cada um com características
+próprias.
+Os jutsus são técnicas ninjas. Cada jutsu possui:
+• Um nome;
+• Um tipo (como Ninjutsu, Taijutsu ou Genjutsu);
+• Um elemento associado (podendo também ser um jutsu sem elemento);
+• Um custo de chakra para ser utilizado (valor inteiro entre 0 e 100);
+• Um poder de ataque (valor inteiro entre 0 e 100).
+Os clãs são famílias importantes no mundo ninja. Cada clã possui:
+• Um nome;
+• Um conjunto de habilidades características. Essas habilidades podem ser:
+• Exclusivas e hereditárias (Kekkei Genkai), como o Sharingan do Clã Uchiha;
+• Técnicas tradicionais, como manipulação de selamentos do Clã Uzumaki.
+Além disso, existem as missões, que são tarefas atribuídas aos ninjas da vila.
+Cada missão possui:
+• Um título;
+• Um líder responsável;
+• Um nível de dificuldade (D, C, B, A ou S);
+• Um status (pendente, em andamento, concluída);
+• Um grupo de ninjas participantes.
+A Tarefa
+Defina, em linguagem C, as estruturas necessárias para representar esse universo a
+partir do enunciado.
+Implemente um programa que permita ao usuário realizar um CRUD (Criar, Ler,
+Atualizar e Excluir) para pelo menos:
+• Ninjas
+• Clãs
+• Jutsus
+• Missões
+O programa deve ser capaz de salvar os dados cadastrados em arquivos de texto.
+Também deve ser possível recuperar os dados salvos e carregá-los novamente no
+programa.
+Os alunos terão que:
+• Interpretar o texto e modelar a solução com boas prática e uso do conteúdo
+ensinado durante o ano por conta própria e com autonomia para escolhar.
+• Implementar um CRUD básico (menus para inclusão, alteração, exclusão e
+listagem de dados).
+• Trabalhar com arquivos texto.
+Regras do Trabalho
+• No máximo 2 discentes;
+• Entrega 28/11/2025;
+• A avaliação será individual embora a apresentação possa ser em dupla;
+• Trabalhos igual serão zerados;
+• Discentes não capazes defender seu código serão reprovados.
