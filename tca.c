@@ -125,7 +125,7 @@ typedef struct
 void chamarTitulo();                    //exibe o título dinamico
 void apagarTitulo(int len);             //apaga o título
 void menu();                            //exibe um menu ao usuário
-void opcaoMenu();              //opção escolhida pelo usuário
+void opcaoMenu();                       //opção escolhida pelo usuário
 
 /*relatorios*/
 void exibirRelatorio();
