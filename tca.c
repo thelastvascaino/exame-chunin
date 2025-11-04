@@ -94,26 +94,30 @@ typedef struct
     Elementos **elemento_ninja;
 }TNinja;
 
+typedef enum
+{
+    A,
+    B,
+    C,
+    D,
+    S
+}dificuldadeMissao;
+
+typedef enum
+{
+    pendente,
+    andamento,
+    concluida
+}statusMissao;
+
 typedef struct
 {
     TData data_missao;
     THora hora_missao;
     char *titulo_missao;
     char *lider_missao;
-    enum dificuldade_missao
-    {
-        A,
-        B,
-        C,
-        D,
-        S
-    };
-    enum statusMissao
-    {
-        pendente,
-        andamento,
-        concluida
-    };
+    dificuldadeMissao dif_missao;
+    statusMissao status;
 }TMissao;
 
 
@@ -416,14 +420,18 @@ TNinja criarNinja()
         do
         {
             printf("Digite a data de nascimento do ninja(DD/MM/AAAA): ");
-            scanf("%d%d%d",&ninja.data_nascimento.dia,&ninja.data_nascimento.mes,&ninja.data_nascimento.ano);
+            scanf("%d%d%d",&ninja.data_nascimento.dia, &ninja.data_nascimento.mes, &ninja.data_nascimento.ano);
             fflush(stdin);
         }
-        while(validarData(ninja.data_nascimento.dia,ninja.data_nascimento.mes, ninja.data_nascimento.ano) == 1);
+        while(validarData(ninja.data_nascimento.dia, ninja.data_nascimento.mes, ninja.data_nascimento.ano) == 1);
 
         if(_numCla == 0)
         {
             criarCla();
+        }
+        else
+        {
+            
         }
     }    
 }
@@ -593,7 +601,24 @@ void opcaoMenuCla(int opcao)
 
 TCla criarCla()
 {
+    TCla cla;
     bool check = true;
+    char strAux[100];
+
+    while(1)
+    {
+        do
+        {
+            printf("Digite o nome do cla: ");
+            gets(strAux);
+            cla.nome_cla = (char*)malloc((strlen(strAux) + 1) * sizeof(char));
+            strcpy(cla.nome_cla, strAux);
+        }
+        while(validarNome(cla.nome_cla));
+
+
+
+    }
 
 }
 
