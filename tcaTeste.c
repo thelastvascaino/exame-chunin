@@ -45,53 +45,51 @@ typedef struct
     char *tecnica_tradicional;
 }TCla;
 
+typedef enum
+{
+    genjutsu,
+    taijustu,
+    ninjutsu
+}tipoJutsu;
+
 typedef struct
 {
     char *nome_jutsu;
-    enum
-    {
-        genjutsu,
-        taijustu,
-        ninjutsu
-    };
+    tipoJutsu tipo;
     Elementos elemento_jutsu;
     int chakra_jutsu;
     int nivel_poder;
 }TJutsu;
+
+typedef enum
+{   
+    vivo,
+    morto,
+    nukenin 
+}statusNinja;
+
+typedef enum 
+{
+    estudante,
+    genin,
+    chunin,
+    jounin,
+    anbu,
+    tokubetsu_Jonin,
+    kage,
+}nivelHierarquico;
+
 
 typedef struct
 {
     TData data_nascimento;
     char *nome_ninja;
     char *titulo_ninja;
-    enum nivelHierarquico
-    {
-        estudante,
-        genin,
-        chunin,
-        jounin,
-        anbu,
-        tokubetsu_Jonin,
-        kage,
-    };
-    enum vilaNinja
-    {
-        folha,
-        areia,
-        nevoa,
-        nuvem,
-        pedra,
-        som,
-        chuva,
-        cachoeira
-    };
-    enum statusNinja
-    {
-        vivo,
-        morto,
-        nukenin
-    };
+    nivelHierarquico hierarquia_ninja;
+    char *vila_ninja;
+    statusNinja status;
     TCla *cla;
+    TJutsu **jutsu_ninja;
     int chakra_ninja;
     Elementos **elemento_ninja;
 }TNinja;
@@ -121,74 +119,79 @@ typedef struct
 
 /* <declaração funções> */
 
-/*<título e menu>*/
+/*<título>*/
 void chamarTitulo();                    //exibe o título dinamico
 void apagarTitulo(int len);             //apaga o título
+
+
+
+/*<menus>*/
 void menu();                            //exibe um menu ao usuário
+void menuNinja();                       //dispara menu de ninjas 
+void menuMissao();                      //dispara menu de missoões 
+void menuJutsu();                       //dispara o menu de jutsus
+void menuTaijutsu();                    //dispara o menu de taijutsu
+void menuGenjutsu();                    
+void menuNinjutsu();
+void menuCla();                         //dispara menu de clã
+
+/*<case de opções>*/
 void opcaoMenu();                       //opção escolhida pelo usuário
+void opcaoMenuNinja(int opcao);         //função do menu de ninjas
+void opcaoMenuMissao(int opcao);        //função do menu de ninjas
+void opcaoMenuJutsu(int opcao);
+void opcaoMenuTaijutsu(int opcao);
+void opcaoMenuGenjutsu(int opcao);
+void opcaoMenuNinjutsu(int opcao);
+void opcaoMenuCla(int opcao);
+
+/*<ler opção do usuário>*/
+void lerOpcaoNinja();                   //le a escolha do usuario
+void lerOpcaoMissao();                  //le a opção de menu de missões 
+void lerOpcaoJutsu();
+void lerOpcaoTaijutsu();
+void lerOpcaoGenjutsu();
+void lerOpcaoNinjutsu();
+void lerOpcaoCla();
+
+/*<criação de dados>*/
+TNinja criarNinja();                    //cria ninja
+TCla criarCla();                        //cria clã
+
+/*<inclusão de dados>*/
+void incluirNinja();                    //dispara função para incluir ninjas
+void incluirMissao();                   //dispara função para incluir missao
+void incluirTaijutsu();
+void incluirGenjutsu();
+void incluirNinjutsu();
+void incluirCla();                      //dispara função para incluir clã
+
+/*<alteração de dados>*/
+void alterarNinja();                    //dispara função para alterar ninjas
+void alterarMissao();                   //dispara função para alterar missão    
+void alterarTaijutsu();
+void alterarGenjutsu();
+void alterarNinjutsu();
+void alterarCla();                      //dispara função para alterar clã
+
+/*<exclusão de dados>*/
+void excluirNinja();                    //dispara função para excluir ninjas
+void excluirMissao();                   //dispara função para excluir missão
+void excluirTaijutsu();
+void excluirGenjutsu();
+void excluirNinjutsu();
+void excluirCla();                      //dispara funçaõ para exluir clã
+
+/*<listar dados>*/
+void listarNinja();                     //dispara função para listar ninjas 
+void listarMissao();                    //dispara função para listar missão
+void listarTaijutsu();
+void listarGenjutsu();
+void listarNinjutsu();
+void listarCla();                       //dispara função para listar clã
 
 /*relatorios*/
 void exibirRelatorio();
-
-/* <cadastro de ninja> */
-
-void menuNinja();                       //dispara menu
-void lerOpcaoNinja();                   //le a escolha do usuario
-void opcaoMenuNinja(int opcao);         //função do menu de ninjas
-TNinja criarNinja();                    //cria ninja
-void incluirNinja();                    //dispara função para incluir ninjas
-void alterarNinja();                    //dispara função para alterar ninjas
-void listarNinja();                     //dispara função para listar ninjas 
-void excluirNinja();                    //dispara função para excluir ninjas
-
-
-/* <cadastro de missões>*/
-void menuMissao();
-void lerOpcaoMissao();
-void opcaoMenuMissao(int opcao);
-void incluirMissao();
-void alterarMissao();
-void listarMissao();
-void excluirMissao();
-
-/*<cadastro de jutsus>*/
-
-void menuJutsu();
-void lerOpcaoJutsu();
-void opcaoMenuJutsu(int opcao);
-/*<taijutsu>*/
-void menuTaijutsu();
-void opcaoMenuTaijutsu(int opcao);
-void lerOpcaoTaijutsu();
-void incluirTaijutsu();
-void alterarTaijutsu();
-void excluirTaijutsu();
-void listarTaijutsu();
-/*<genjutsu>*/
-void menuGenjutsu();
-void opcaoMenuGenjutsu(int opcao);
-void lerOpcaoGenjutsu();
-void incluirGenjutsu();
-void alterarGenjutsu();
-void excluirGenjutsu();
-void listarGenjutsu();
-/*<ninjutsu>*/
-void menuNinjutsu();
-void opcaoMenuNinjutsu(int opcao);
-void lerOpcaoNinjutsu();
-void incluirNinjutsu();
-void alterarNinjutsu();
-void excluirNinjutsu();
-void listarNinjutsu();
-
-/*<cadastro de clã>*/
-void menuCla();
-void opcaoMenuCla(int opcao);
-void lerOpcaoCla();
-void incluirCla();
-void alterarCla();
-void excluirCla();
-void listarCla();
 
 
 /*<controle de erros>*/
@@ -279,7 +282,7 @@ void opcaoMenu()
     switch(opcao)
     {
         case 1:
-            menuNinja;
+            menuNinja();
             break;
 
         case 2:
@@ -408,12 +411,6 @@ TNinja criarNinja()
             fflush(stdin);
 
             validarSimNao(tolower(opcaoSimNao));
-            if (opcaoSimNao != 's' && opcaoSimNao != 'n')
-            {
-                ERRO(-1);
-                SPAUSE
-                printf("\n");
-            }
             if (opcaoSimNao == 'n')
             {
                 break;
@@ -434,8 +431,13 @@ TNinja criarNinja()
             scanf("%d%d%d",&ninja.data_nascimento.dia,&ninja.data_nascimento.mes,&ninja.data_nascimento.ano);
             fflush(stdin);
         }
-        while(1);
-    }
+        while(validarData(ninja.data_nascimento.dia,ninja.data_nascimento.mes, ninja.data_nascimento.ano) == 1);
+
+        if(_numCla == 0)
+        {
+            criarCla();
+        }
+    }    
 }
 
 
@@ -763,6 +765,12 @@ void opcaoMenuCla(int opcao)
             ERRO(-1);
             break;
     }
+}
+
+TCla criarCla()
+{
+    bool check = true;
+
 }
 
 bool validarNome(char *nome)
