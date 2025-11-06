@@ -427,12 +427,18 @@ TNinja criarNinja()
 
         if(_numCla == 0)
         {
+            ERRO(-4);
+            SPAUSE
             criarCla();
+            return;
         }
         else
         {
-            
+            printf("Existem %d clas cadastrados\n", _numCla);
+            printf("Qual deseja cla deseja adicionar ao seu ninja?\n");
         }
+
+        
     }    
 }
 
@@ -726,6 +732,9 @@ void ERRO(int codigoErro)
         case -3:
             printf("**ERRO: DATA INVALIDA**\n");
             break;
+
+        case -4:
+            printf("**ERRO: NAO HA NENHUM CLA CADASTRADO**\n");
 
         case -30:
             printf("**ERRO: NINJA JA CADASTRADO**\n");
