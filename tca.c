@@ -43,6 +43,7 @@ typedef struct
     char *nome_cla;
     char *tecnica_exclusiva;
     char *tecnica_tradicional;
+    int qtd_tradicionais;
 }TCla;
 
 typedef enum
@@ -398,7 +399,7 @@ TNinja criarNinja()
         char opcaoSimNao;
         do
         {
-            printf("**Deseja cadastrar um titulo especial para seu ninja (S\N)?");
+            printf("**Deseja cadastrar um titulo especial para seu ninja? (s/n)\n");
             scanf("%c", &opcaoSimNao);
             fflush(stdin);
 
@@ -438,7 +439,7 @@ TNinja criarNinja()
             printf("Qual deseja cla deseja adicionar ao seu ninja?\n");
         }
 
-        
+
     }    
 }
 
@@ -609,7 +610,7 @@ TCla criarCla()
 {
     TCla cla;
     bool check = true;
-    char strAux[100];
+    char strAux[1000];
 
     while(1)
     {
@@ -621,6 +622,43 @@ TCla criarCla()
             strcpy(cla.nome_cla, strAux);
         }
         while(validarNome(cla.nome_cla));
+
+        do
+        {
+            printf("Digite o nome da tecnica exclusiva do cla: ");
+            gets(strAux);
+            cla.tecnica_exclusiva = (char*)malloc((strlen(strAux) + 1) * sizeof(char));
+            strcpy(cla.tecnica_exclusiva,strAux);
+        }
+        while(validarNome(cla.tecnica_exclusiva));
+
+        char opcaoSimNao;
+
+        do
+        {
+            printf("Digite o nome da tecnica tradicional do cla: ");
+            gets(strAux);
+            cla.tecnica_tradicional = (char*)malloc((strlen(strAux) + 1) * sizeof(char));
+            strcpy(cla.tecnica_tradicional, strAux);
+
+            while(1)
+            {
+                printf("Deseja adicionar mais tecnicas?(s/n)");
+                scanf("%c", &opcaoSimNao);
+                validarSimNao(tolower(opcaoSimNao));
+                if(opcaoSimNao == 'n')
+                {
+                    break;
+                }
+                else
+                {
+                    printf("Digite o nome da tecnica tradicional do cla: ");
+                    gets(strAux);
+                    
+                }
+            }
+        }
+        while(validarNome(cla.tecnica_tradicional));
 
 
 
