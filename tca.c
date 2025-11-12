@@ -42,7 +42,7 @@ typedef struct
 {
     char *nome_cla;
     char *tecnica_exclusiva;
-    char *tecnica_tradicional;
+    char **tecnica_tradicional;
     int qtd_tradicionais;
 }TCla;
 
@@ -609,8 +609,12 @@ void opcaoMenuCla(int opcao)
 TCla criarCla()
 {
     TCla cla;
+    char opcaoSimNao;
     bool check = true;
     char strAux[1000];
+
+    cla.tecnica_tradicional = NULL;
+    cla.qtd_tradicionais = 0;
 
     while(1)
     {
@@ -620,20 +624,50 @@ TCla criarCla()
             gets(strAux);
             cla.nome_cla = (char*)malloc((strlen(strAux) + 1) * sizeof(char));
             strcpy(cla.nome_cla, strAux);
+            if (cla.nome_cla == NULL)
+            {
+                ERRO(-99);
+                exit(1);
+            }
+            for(int i = 0; i < _numCla; i++)
+            {
+                if(strcmp(_cla[i].nome_cla,cla.nome_cla) == 0)
+                {
+                    check = false;
+                    break;
+                }
+            }
+            if(check)
+            {
+                break;
+            }
+            else
+            {
+                ERRO(-51);
+                SPAUSE
+                printf("\n");
+            }
         }
         while(validarNome(cla.nome_cla));
+    }
 
-        do
+    do
+    {
+        printf("Digite o nome da tecnica exclusiva do cla: ");
+        gets(strAux);
+        cla.tecnica_exclusiva = (char*)malloc((strlen(strAux) + 1) * sizeof(char));            
+        if (cla.tecnica_exclusiva == NULL)
         {
-            printf("Digite o nome da tecnica exclusiva do cla: ");
-            gets(strAux);
-            cla.tecnica_exclusiva = (char*)malloc((strlen(strAux) + 1) * sizeof(char));
-            strcpy(cla.tecnica_exclusiva,strAux);
+            ERRO(-99);
+            exit(1);
         }
-        while(validarNome(cla.tecnica_exclusiva));
+        strcpy(cla.tecnica_exclusiva,strAux);
+        
+    }
+    while(validarNome(cla.tecnica_exclusiva));
 
-        char opcaoSimNao;
-
+    while(1)
+    {
         do
         {
             printf("Digite o nome da tecnica tradicional do cla: ");
@@ -645,6 +679,7 @@ TCla criarCla()
             {
                 printf("Deseja adicionar mais tecnicas?(s/n)");
                 scanf("%c", &opcaoSimNao);
+                fflush(stdin);
                 validarSimNao(tolower(opcaoSimNao));
                 if(opcaoSimNao == 'n')
                 {
@@ -653,17 +688,12 @@ TCla criarCla()
                 else
                 {
                     printf("Digite o nome da tecnica tradicional do cla: ");
-                    gets(strAux);
-                    
+                    gets(strAux);    
                 }
             }
         }
         while(validarNome(cla.tecnica_tradicional));
-
-
-
     }
-
 }
 
 bool validarNome(char *nome)
@@ -778,8 +808,16 @@ void ERRO(int codigoErro)
             printf("**ERRO: NINJA JA CADASTRADO**\n");
             break;
 
+        case -51:
+            printf("**ERRO: JA EXISTE UM CLA COM ESSE NOME**\n");
+            break;
+
         case -31:
             printf("**ERRO: O NOME DEVE CONTER APENAS LETRAS**\n");
+            break;
+
+        case -99:
+            printf("**ERRO: FALHA NA ALOCACAO**\n");
             break;
 
         default:

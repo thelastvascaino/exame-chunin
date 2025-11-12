@@ -43,6 +43,7 @@ typedef struct
     char *nome_cla;
     char *tecnica_exclusiva;
     char *tecnica_tradicional;
+    int qtd_tradicionais;
 }TCla;
 
 typedef enum
@@ -769,8 +770,70 @@ void opcaoMenuCla(int opcao)
 
 TCla criarCla()
 {
-    bool check = true;
+    TCla cla;
+    char strAux[1000];
+    char opcaoSimNao;
+    // --- ADIÇÃO DINÂMICA DE TÉCNICAS TRADICIONAIS ---
+    
+    // Inicializa o vetor de técnicas (NULL) e o contador (0)
+    cla.tecnica_tradicional = NULL;
+    cla.qtd_tradicionais = 0;
 
+    // Loop para adicionar múltiplas técnicas tradicionais
+    while (1) 
+    {
+        // 1. Perguntar e validar o nome da técnica atual
+        do
+        {
+            // O contador (qtd_tradicionais) serve como índice do array e número da técnica
+            printf("Digite o nome da tecnica tradicional [%d]: ", cla.qtd_tradicionais + 1);
+            gets(strAux);
+        }
+        while(validarNome(strAux)); 
+
+        // 2. Aumentar dinamicamente o vetor de ponteiros (realloc)
+        // O realloc redimensiona o vetor para caber mais um ponteiro (char*)
+        cla.tecnica_tradicional = (char**)realloc(cla.tecnica_tradicional, (cla.qtd_tradicionais + 1) * sizeof(char*));
+
+        // Checagem obrigatória de falha no realloc
+        if (cla.tecnica_tradicional == NULL)
+        {
+            ERRO(-99);
+            exit(EXIT_FAILURE); 
+        }
+
+        // 3. Alocar espaço para a nova string (o nome da técnica)
+        int indice = cla.qtd_tradicionais;
+        cla.tecnica_tradicional[indice] = (char*)malloc((strlen(strAux) + 1) * sizeof(char));
+        
+        // Checagem de falha no malloc
+        if (cla.tecnica_tradicional[indice] == NULL)
+        {
+            ERRO(-99);
+            exit(EXIT_FAILURE);
+        }
+        
+        // 4. Copiar a string e incrementar o contador
+        strcpy(cla.tecnica_tradicional[indice], strAux);
+        cla.qtd_tradicionais++;
+
+        // 5. Perguntar se deseja adicionar mais (no seu estilo de entrada)
+        do
+        {
+            printf("Deseja adicionar mais tecnicas? (s/n): ");
+            scanf("%c", &opcaoSimNao);
+            fflush(stdin); 
+            
+        } while(validarSimNao(tolower(opcaoSimNao)));
+
+        // 6. Sair do loop de técnicas se o usuário digitar 'n'
+        if (tolower(opcaoSimNao) == 'n')
+        {
+            break;
+        }
+    } 
+
+    // ... (o restante da sua função criarCla() continua aqui, terminando com 'return cla;')
 }
 
 bool validarNome(char *nome)
@@ -891,3 +954,4 @@ void ERRO(int codigoErro)
             break;
     }
 }
+
