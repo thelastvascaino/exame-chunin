@@ -771,69 +771,102 @@ void opcaoMenuCla(int opcao)
 TCla criarCla()
 {
     TCla cla;
+    bool check = true;
     char strAux[1000];
-    char opcaoSimNao;
-    // --- ADIÇÃO DINÂMICA DE TÉCNICAS TRADICIONAIS ---
-    
-    // Inicializa o vetor de técnicas (NULL) e o contador (0)
-    cla.tecnica_tradicional = NULL;
-    cla.qtd_tradicionais = 0;
 
-    // Loop para adicionar múltiplas técnicas tradicionais
-    while (1) 
+    // --- CADASTRO E VALIDAÇÃO DO NOME DO CLÃ ---
+    while(1)
     {
-        // 1. Perguntar e validar o nome da técnica atual
         do
         {
-            // O contador (qtd_tradicionais) serve como índice do array e número da técnica
-            printf("Digite o nome da tecnica tradicional [%d]: ", cla.qtd_tradicionais + 1);
+            printf("Digite o nome do cla: ");
             gets(strAux);
-        }
-        while(validarNome(strAux)); 
-
-        // 2. Aumentar dinamicamente o vetor de ponteiros (realloc)
-        // O realloc redimensiona o vetor para caber mais um ponteiro (char*)
-        cla.tecnica_tradicional = (char**)realloc(cla.tecnica_tradicional, (cla.qtd_tradicionais + 1) * sizeof(char*));
-
-        // Checagem obrigatória de falha no realloc
-        if (cla.tecnica_tradicional == NULL)
-        {
-            ERRO(-99);
-            exit(EXIT_FAILURE); 
-        }
-
-        // 3. Alocar espaço para a nova string (o nome da técnica)
-        int indice = cla.qtd_tradicionais;
-        cla.tecnica_tradicional[indice] = (char*)malloc((strlen(strAux) + 1) * sizeof(char));
-        
-        // Checagem de falha no malloc
-        if (cla.tecnica_tradicional[indice] == NULL)
-        {
-            ERRO(-99);
-            exit(EXIT_FAILURE);
-        }
-        
-        // 4. Copiar a string e incrementar o contador
-        strcpy(cla.tecnica_tradicional[indice], strAux);
-        cla.qtd_tradicionais++;
-
-        // 5. Perguntar se deseja adicionar mais (no seu estilo de entrada)
-        do
-        {
-            printf("Deseja adicionar mais tecnicas? (s/n): ");
-            scanf("%c", &opcaoSimNao);
-            fflush(stdin); 
             
-        } while(validarSimNao(tolower(opcaoSimNao)));
+            // 1. Aloca memória para o nome (com checagem de erro)
+            cla.nome_cla = (char*)malloc((strlen(strAux) + 1) * sizeof(char));
+            if (cla.nome_cla == NULL)
+            {
+                ERRO(-99);
+                exit(1);
+            }
+            strcpy(cla.nome_cla, strAux);
+            
+            // Re-inicializa check antes de verificar
+            check = true; 
 
-        // 6. Sair do loop de técnicas se o usuário digitar 'n'
-        if (tolower(opcaoSimNao) == 'n')
-        {
-            break;
+            // 2. Validação de Unicidade
+            for(int i = 0; i < _numCla; i++)
+            {
+                if(strcmp(_cla[i].nome_cla, cla.nome_cla) == 0)
+                {
+                    check = false; // Nome duplicado!
+                    break;
+                }
+            }
+            
+            // 3. Verifica Unicidade e Validação de Nome (validarNome)
+            if(check && !validarNome(cla.nome_cla)) // Se for único E válido (validarNome retorna 0/false)
+            {
+                break; // Sai do do-while
+            }
+            else if (!check) // Não é único (duplicado)
+            {
+                ERRO(-51); // Erro de clã já existente
+                SPAUSE
+                printf("\n");
+            }
+            // Se cair aqui, é porque validarNome retornou true (nome inválido), e o do-while se repete.
+            
         }
-    } 
+        while(validarNome(cla.nome_cla) || !check); // Continua se o nome for inválido OU se o nome não for único.
+        
+        if (check && !validarNome(cla.nome_cla)) {
+            break; // Sai do while(1) externo se o nome for válido e único.
+        }
+    }
 
-    // ... (o restante da sua função criarCla() continua aqui, terminando com 'return cla;')
+    // --- CADASTRO E VALIDAÇÃO DA TÉCNICA EXCLUSIVA ---
+    do
+    {
+        printf("Digite o nome da tecnica exclusiva do cla: ");
+        gets(strAux);
+        
+        // Aloca memória (com checagem de erro)
+        cla.tecnica_exclusiva = (char*)malloc((strlen(strAux) + 1) * sizeof(char));
+        if (cla.tecnica_exclusiva == NULL)
+        {
+            ERRO(-99);
+            exit(1);
+        }
+        strcpy(cla.tecnica_exclusiva,strAux);
+        
+    }
+    while(validarNome(cla.tecnica_exclusiva));
+
+
+    // --- CADASTRO DA ÚNICA TÉCNICA TRADICIONAL ---
+
+    do
+    {
+        printf("Digite o nome da tecnica tradicional do cla: ");
+        gets(strAux); 
+    }
+    while(validarNome(strAux)); 
+
+    // Aloca memória para a técnica tradicional (char*)
+    cla.tecnica_tradicional = (char*)malloc((strlen(strAux) + 1) * sizeof(char));
+
+    // Checagem de erro de alocação
+    if (cla.tecnica_tradicional == NULL)
+    {
+        ERRO(-99);
+        exit(1); 
+    }
+    
+    // Copia a string lida para o espaço alocado
+    strcpy(cla.tecnica_tradicional, strAux);
+
+    return cla;
 }
 
 bool validarNome(char *nome)
