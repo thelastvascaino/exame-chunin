@@ -17,51 +17,51 @@
 /*<enums>*/
 typedef enum
 {
-    agua,
-    fogo,
-    terra,
-    vento,
-    raio,
-    composto
+    agua = 0,
+    fogo = 1,
+    terra = 2,
+    vento = 3,
+    raio = 4,
+    composto = 5
 } Elementos;
 typedef enum
 {
-    genjutsu,
-    taijustu,
-    ninjutsu
+    genjutsu = 0,
+    taijustu = 1,
+    ninjutsu = 3
 } tipoJutsu;
 
 typedef enum
 {
-    vivo,
-    morto,
-    nukenin
+    vivo = 0,
+    morto = 1,
+    nukenin = 2
 } statusNinja;
 
 typedef enum
 {
-    estudante,
-    genin,
-    chunin,
-    jounin,
-    anbu,
-    tokubetsu_Jonin,
-    kage
+    estudante = 0,
+    genin = 1,
+    chunin = 2,
+    jounin = 3,
+    anbu = 4,
+    tokubetsu_Jonin = 5,
+    kage = 6
 } nivelHierarquico;
 typedef enum
 {
-    A,
-    B,
-    C,
-    D,
-    S
+    A = 0,
+    B = 1,
+    C = 2,
+    D = 3,
+    S = 4
 } dificuldadeMissao;
 
 typedef enum
 {
-    pendente,
-    andamento,
-    concluida
+    pendente = 0,
+    andamento = 1,
+    concluida = 3
 } statusMissao;
 
 /*<estruturas>*/
@@ -172,7 +172,7 @@ TJutsu criarJutsu();
 /*<listar dados>*/
 // void listarNinja();                     //dispara função para listar ninjas
 // void listarMissao();                    //dispara função para listar missão
-// void listarJutsu();                     //disára função para listar jutsu
+// void listarJutsu();                     //dispara função para listar jutsu
 // void listarCla();                       //dispara função para listar clã
 
 /*relatorios*/
@@ -200,10 +200,11 @@ int _numCla = 0;
 
 int main()
 {
-    CLS int opcao = -1;
+    CLS 
+    int opcao = -1;
 
-    chamarTitulo();
-    apagarTitulo(strlen("VOCE ESTA AQUI PARA MOSTRAR SEU VERDADEIRO JEITO NINJA, DATTEBAYO!"));
+    //chamarTitulo();
+    //apagarTitulo(strlen("VOCE ESTA AQUI PARA MOSTRAR SEU VERDADEIRO JEITO NINJA, DATTEBAYO!"));
 
     do
     {
@@ -211,6 +212,7 @@ int main()
         scanf("%d", &opcao);
         fflush(stdin);
         opcaoMenu(opcao);
+    
     } while (opcao != 0);
 
     return 0;
@@ -241,9 +243,7 @@ void apagarTitulo(int len)
 
 void menu()
 {
-    CLS
-        printf("\n--- Cadastro de Ninjas e Missoes ---\n");
-
+    printf("\n--- Cadastro de Ninjas e Missoes ---\n");
     printf("------------------------\n");
     printf("(1) - Manter Ninja\n");
     printf("(2) - Manter Missao\n");
@@ -258,38 +258,38 @@ void menu()
 
 void opcaoMenu(int opcao)
 {
-    CLS switch (opcao)
+    switch (opcao)
     {
-    case 1:
+        case 1:
         menuNinja();
         break;
-
-    case 2:
+        
+        case 2:
         menuMissao();
         break;
-    case 3:
+        case 3:
         menuJutsu();
         break;
-
-    case 4:
+        
+        case 4:
         menuCla();
         break;
-
-    case 5:
+        
+        case 5:
         // exibirRelatorio();
         break;
-
-    case 0:
+        
+        case 0:
         CLS
-            printf("Saindo");
+        printf("Saindo");
         for (int i = 0; i < 3; i++)
         {
             printf(".");
             Sleep(700);
         }
         break;
-
-    default:
+        
+        default:
         ERRO(-1);
         SPAUSE
         printf("\n");
@@ -299,8 +299,7 @@ void opcaoMenu(int opcao)
 
 void menuNinja()
 {
-    CLS
-        printf("-- Manter Ninja --\n");
+    printf("-- Manter Ninja --\n");
     printf("------------------------\n");
     printf("(1) - Incluir Ninja\n");
     printf("(2) - Alterar Ninja\n");
@@ -315,24 +314,26 @@ void opcaoMenuNinja(int opcao)
 {
     switch (opcao)
     {
-    case 1:
-        // incluirNinja();
-        break;
+        case 1:
+            // incluirNinja();
+            break;
 
-    case 2:
-        // alterarNinja();
-        break;
+        case 2:
+            // alterarNinja();
+            break;
 
-    case 3:
-        // excluirNinja();
-        break;
+        case 3:
+            // excluirNinja();
+            break;
 
-    case 0:
-        break;
+        case 0:
+            break;
 
-    default:
-        ERRO(-1);
-        break;
+        default:
+            ERRO(-1);
+            SPAUSE
+            printf("\n");
+            return;
     }
 }
 
@@ -354,7 +355,7 @@ void lerOpcaoNinja()
 void menuMissao()
 {
     CLS
-        printf("-- Manter Missao --\n");
+    printf("-- Manter Missao --\n");
     printf("------------------------\n");
     printf("(1) - Incluir Missao\n");
     printf("(2) - Alterar Missao\n");
@@ -369,23 +370,24 @@ void opcaoMenuMissao(int opcao)
 {
     switch (opcao)
     {
-    case 1:
-        // incluirMissao();
-        break;
+        case 1:
+            // incluirMissao();
+            break;
+        case 2:
+            // alterarMissao();
+            break;
 
-    case 2:
-        // alterarMissao();
-        break;
+        case 3:
+            // excluirMissao();
+            break;
+        case 0:
+            break;
 
-    case 3:
-        // excluirMissao();
-
-    case 0:
-        break;
-
-    default:
-        ERRO(-1);
-        break;
+        default:
+            ERRO(-1);
+            SPAUSE
+            printf("\n");
+            return;
     }
 }
 
@@ -407,7 +409,7 @@ void lerOpcaoMissao()
 void menuJutsu()
 {
     CLS
-        printf("---MANTER JUTSU---\n");
+    printf("---MANTER JUTSU---\n");
     printf("------------------------\n");
     printf("(1) - Incluir Jutsu\n");
     printf("(2) - Alterar Jutsu\n");
@@ -422,23 +424,25 @@ void opcaoMenuJutsu(int opcao)
 {
     switch (opcao)
     {
-    case 1:
-        // incluirJutsu();
-        break;
+        case 1:
+            // incluirJutsu();
+            break;
 
-    case 2:
-        // alterarJutsu();
-        break;
+        case 2:
+            // alterarJutsu();
+            break;
 
-    case 3:
-        // excluirJutsu();
-        break;
-    case 0:
-        break;
+        case 3:
+            // excluirJutsu();
+            break;
+        case 0:
+            break;
 
-    default:
-        ERRO(-1);
-        break;
+        default:
+            ERRO(-1);
+            SPAUSE
+            printf("\n");
+            return;
     }
 }
 
@@ -488,24 +492,26 @@ void opcaoMenuCla(int opcao)
 {
     switch (opcao)
     {
-    case 1:
-        // incluirCla();
-        break;
+        case 1:
+            // incluirCla();
+            break;
 
-    case 2:
-        // alterarCla();
-        break;
+        case 2:
+            // alterarCla();
+            break;
 
-    case 3:
-        // excluirCla();
-        break;
+        case 3:
+            // excluirCla();
+            break;
 
-    case 0:
-        break;
+        case 0:
+            break;
 
-    default:
-        ERRO(-1);
-        break;
+        default:
+            ERRO(-1);
+            SPAUSE
+            printf("\n");
+            return;
     }
 }
 
@@ -672,14 +678,14 @@ TJutsu criarJutsu()
     char strAux[1000];
     bool check = true;
 
-    while(1)
+    while (1)
     {
         do
         {
             printf("Nome do jutsu: ");
             gets(strAux);
-            jutsu.nome_jutsu = (char*)malloc((strlen(strAux) + 1) * sizeof(char));
-            if(jutsu.nome_jutsu == NULL)
+            jutsu.nome_jutsu = (char *)malloc((strlen(strAux) + 1) * sizeof(char));
+            if (jutsu.nome_jutsu == NULL)
             {
                 ERRO(-99);
                 exit(1);
@@ -709,14 +715,7 @@ TJutsu criarJutsu()
                 SPAUSE
                 printf("\n");
             }
-        }
-        while(validarNome(jutsu.nome_jutsu) || !check);
-
-        do
-        {
-            printf("Elemento do jutsu: ");
-            
-        }
+        } while (validarNome(jutsu.nome_jutsu) || !check);
     }
 }
 
