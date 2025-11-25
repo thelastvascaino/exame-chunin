@@ -1244,7 +1244,8 @@ void Listarrcla()
         printf("    Técnicas: %s\n", _cla[i].tecnicas);
         printf("------------------------\n");
     }
-    SPAUSE;
+    SPAUSE
+    return 0;
 }
 
 void Editarcla()
