@@ -114,6 +114,7 @@ typedef struct
     THora hora_missao;
     char *titulo_missao;
     char *lider_missao;
+    TNinja *ninjas_missao;
     dificuldadeMissao dif_missao;
     statusMissao status;
 } TMissao;
@@ -125,31 +126,33 @@ void chamarTitulo();        // exibe o título dinamico
 void apagarTitulo(int len); // apaga o título
 
 /*<menus>*/
-void menu();       // exibe um menu ao usuário
-void menuNinja();  // dispara menu de ninjas
-void menuMissao(); // dispara menu de missoões
-void menuJutsu();  // dispara o menu de jutsus
-void menuCla();    // dispara menu de clã
+void menu();            // exibe um menu ao usuário
+void menuNinja();       // dispara menu de ninjas
+void menuMissao();      // dispara menu de missoões
+void menuJutsu();       // dispara o menu de jutsus
+void menuCla();         // dispara menu de clã
+void menuRelatorio();   //dispara menu de relatorio
 
 /*<case de opções>*/
-void opcaoMenu(int opcao);       // opção escolhida pelo usuário
-void opcaoMenuNinja(int opcao);  // função do menu de ninjas
-void opcaoMenuMissao(int opcao); // função do menu de ninjas
-void opcaoMenuJutsu(int opcao);
-
-void opcaoMenuCla(int opcao);
+void opcaoMenu(int opcao);          //menu principal
+void opcaoMenuNinja(int opcao);     //função do menu de ninjas
+void opcaoMenuMissao(int opcao);    //função do menu de ninjas
+void opcaoMenuJutsu(int opcao);     //função do menu de jutsus
+void opcaoMenuCla(int opcao);       //função do menu de clas
+void opcaoMenuRelatorio(int opcao); //função do menu de relatorios
 
 /*<ler opção do usuário>*/
-void lerOpcaoNinja();  // le a escolha do usuario
-void lerOpcaoMissao(); // le a opção de menu de missões
-void lerOpcaoJutsu();
-
-void lerOpcaoCla();
+void lerOpcaoNinja();           //menu de escolhas de ninja
+void lerOpcaoMissao();          //menu de escolhas de missões
+void lerOpcaoJutsu();           //menu de escolhas de jutsu
+void lerOpcaoCla();             //menu de escolhas de cla
+void lerOpcaoRelatorio();       //menu de escolhas de relatório
 
 /*<criação de dados>*/
-TNinja criarNinja(); // cria ninja
-TCla criarCla();     // cria clã
-TJutsu criarJutsu();
+TNinja criarNinja();            //cria ninja
+TCla criarCla();                //cria clã
+TJutsu criarJutsu();            //cria jutsu
+//TMissao criarMissao();          //cria missão
 
 /*<inclusão de dados>*/
 // void incluirNinja();                    //dispara função para incluir ninjas
@@ -175,8 +178,6 @@ TJutsu criarJutsu();
 // void listarJutsu();                     //dispara função para listar jutsu
 // void listarCla();                       //dispara função para listar clã
 
-/*relatorios*/
-// void exibirRelatorio();
 
 /*<controle de erros>*/
 void ERRO(int codigoErro); // exibe uma mensagem de erro
@@ -203,8 +204,8 @@ int main()
     CLS 
     int opcao = -1;
 
-    //chamarTitulo();
-    //apagarTitulo(strlen("VOCE ESTA AQUI PARA MOSTRAR SEU VERDADEIRO JEITO NINJA, DATTEBAYO!"));
+    chamarTitulo();
+    apagarTitulo(strlen("VOCE ESTA AQUI PARA MOSTRAR SEU VERDADEIRO JEITO NINJA, DATTEBAYO!"));
 
     do
     {
@@ -212,6 +213,7 @@ int main()
         scanf("%d", &opcao);
         fflush(stdin);
         opcaoMenu(opcao);
+        CLS
     
     } while (opcao != 0);
 
@@ -261,22 +263,22 @@ void opcaoMenu(int opcao)
     switch (opcao)
     {
         case 1:
-        menuNinja();
+        lerOpcaoNinja();
         break;
         
         case 2:
-        menuMissao();
+        lerOpcaoCla();
         break;
         case 3:
-        menuJutsu();
+        lerOpcaoJutsu();
         break;
         
         case 4:
-        menuCla();
+        lerOpcaoCla();
         break;
         
         case 5:
-        // exibirRelatorio();
+        lerOpcaoRelatorio();
         break;
         
         case 0:
@@ -343,12 +345,12 @@ void lerOpcaoNinja()
 
     do
     {
+        CLS
         menuNinja();
         scanf("%d", &opcao);
         fflush(stdin);
 
         opcaoMenuNinja(opcao);
-        CLS
     } while (opcao != 0);
 }
 
@@ -467,7 +469,7 @@ void menuCla()
     printf("------------------------\n");
     printf("(1) - Incluir Cla\n");
     printf("(2) - Alterar Cla\n");
-    printf("(3) - Excluir Cla");
+    printf("(3) - Excluir Cla\n");
     printf("(0) - voltar\n");
     printf("------------------------\n");
     printf("**Escolha uma das opcoes acima: ");
@@ -479,6 +481,7 @@ void lerOpcaoCla()
 
     do
     {
+        CLS
         menuCla();
         scanf("%d", &opcao);
         fflush(stdin);
@@ -513,6 +516,66 @@ void opcaoMenuCla(int opcao)
             printf("\n");
             return;
     }
+}
+
+void menuRelatorio()
+{
+    printf("-- MANTER RELATORIO --\n");
+    printf("------------------------\n");
+    printf("(1) - Listar Ninja\n");
+    printf("(2) - Listar Missao\n");
+    printf("(3) - Listar Jutsu\n");
+    printf("(4) - Listar Cla\n");
+    printf("(0) - voltar\n");
+    printf("------------------------\n");
+    printf("**Escolha uma das opcoes acima: "); 
+}
+
+void opcaoMenuRelatorio(int opcao)
+{
+    switch (opcao)
+    {
+        case 1:
+            //listarNinja();
+            break;
+
+        case 2:
+            //listarMissao();
+            break;
+
+        case 3:
+            //listarJutsu();
+            break;
+        
+        case 4:
+            //listarCla();
+            break;
+
+        case 0:
+            break;
+
+        default:
+            ERRO(-1);
+            SPAUSE
+            printf("\n");
+            return;
+    }
+}
+
+void lerOpcaoRelatorio()
+{
+    int opcao;
+
+    do
+    {
+        CLS
+        menuRelatorio();
+        scanf("%d", &opcao);
+        fflush(stdin);
+
+        opcaoMenuRelatorio(opcao);
+        CLS
+    } while (opcao != 0);
 }
 
 TNinja criarNinja()
