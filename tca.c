@@ -103,7 +103,7 @@ typedef struct
     nivelHierarquico hierarquia_ninja;
     statusNinja status;
     char *vila_ninja;
-    TCla cla;
+    TCla *cla;
     TJutsu **jutsu_ninja;
     int chakra_ninja;
     Elementos **elemento_ninja;
@@ -155,10 +155,10 @@ TJutsu criarJutsu();            //cria jutsu
 //TMissao criarMissao();          //cria missão
 
 /*<inclusão de dados>*/
-// void incluirNinja();                    //dispara função para incluir ninjas
+void incluirNinja();                    //dispara função para incluir ninjas
 // void incluirMissao();                   //dispara função para incluir missao
 // void incluirJutsu();                    //dispara função para incluir jutsu
-// void incluirCla();                      //dispara função para incluir clã
+void incluirCla();                      //dispara função para incluir clã
 
 /*<alteração de dados>*/
 // void alterarNinja();                    //dispara função para alterar ninjas
@@ -178,12 +178,22 @@ TJutsu criarJutsu();            //cria jutsu
 // void listarJutsu();                     //dispara função para listar jutsu
 // void listarCla();                       //dispara função para listar clã
 
+/*<limpeza de memória>*/
+
+void liberarMemoria();
+void liberarNinja();
+void liberarMissao();
+void liberarJutsu();
+void liberarCla();
+
 
 /*<controle de erros>*/
 void ERRO(int codigoErro); // exibe uma mensagem de erro
 bool validarNome(char *nome);
 bool validarData(int dia, int mes, int ano);
 bool validarSimNao(char opcao);
+bool validarInteiro(char *str);
+bool validarChakra(int chakra);
 
 /* <declaração das variáveis globais> */
 
@@ -201,11 +211,12 @@ int _numCla = 0;
 
 int main()
 {
+    SetConsoleOutputCP(65001);
     CLS 
     int opcao = -1;
 
     chamarTitulo();
-    apagarTitulo(strlen("VOCE ESTA AQUI PARA MOSTRAR SEU VERDADEIRO JEITO NINJA, DATTEBAYO!"));
+    apagarTitulo(strlen("VOCE ESTÁ AQUI PARA MOSTRAR SEU VERDADEIRO JEITO NINJA, DATTEBAYO!"));
 
     do
     {
@@ -217,6 +228,8 @@ int main()
     
     } while (opcao != 0);
 
+    liberarMemoria();
+
     return 0;
 }
 
@@ -226,7 +239,7 @@ int main()
 void chamarTitulo()
 {
     char *str;
-    str = "VOCE ESTA AQUI PARA MOSTRAR SEU VERDADEIRO JEITO NINJA, DATTEBAYO!";
+    str = "VOCE ESTÁ AQUI PARA MOSTRAR SEU VERDADEIRO JEITO NINJA, DATTEBAYO!";
     for (int i = 0; str[i] != '\0'; i++)
     {
         printf("%c", str[i]);
@@ -245,17 +258,17 @@ void apagarTitulo(int len)
 
 void menu()
 {
-    printf("\n--- Cadastro de Ninjas e Missoes ---\n");
+    printf("\n--- Cadastro de Ninjas e Missões ---\n");
     printf("------------------------\n");
     printf("(1) - Manter Ninja\n");
-    printf("(2) - Manter Missao\n");
+    printf("(2) - Manter Missão\n");
     printf("(3) - Manter Jutsu\n");
-    printf("(4) - Manter Cla\n");
+    printf("(4) - Manter Clã\n");
     printf("(5) - Exibir Relatorios\n");
     printf("(0) - Sair\n");
     printf("------------------------\n");
 
-    printf("**Escolha uma das opcoes acima: ");
+    printf("**Escolha uma das opções acima: ");
 }
 
 void opcaoMenu(int opcao)
@@ -267,8 +280,9 @@ void opcaoMenu(int opcao)
         break;
         
         case 2:
-        lerOpcaoCla();
+        lerOpcaoMissao();
         break;
+
         case 3:
         lerOpcaoJutsu();
         break;
@@ -317,7 +331,7 @@ void opcaoMenuNinja(int opcao)
     switch (opcao)
     {
         case 1:
-            // incluirNinja();
+            incluirNinja();
             break;
 
         case 2:
@@ -357,15 +371,15 @@ void lerOpcaoNinja()
 void menuMissao()
 {
     CLS
-    printf("-- Manter Missao --\n");
+    printf("-- Manter Missão --\n");
     printf("------------------------\n");
-    printf("(1) - Incluir Missao\n");
-    printf("(2) - Alterar Missao\n");
-    printf("(3) - Excluir Missao\n");
+    printf("(1) - Incluir Missão\n");
+    printf("(2) - Alterar Missão\n");
+    printf("(3) - Excluir Missão\n");
     printf("(0) - Voltar\n");
     printf("------------------------\n");
 
-    printf("**Escolha uma opcao: ");
+    printf("**Escolha uma opção: ");
 }
 
 void opcaoMenuMissao(int opcao)
@@ -419,7 +433,7 @@ void menuJutsu()
     printf("(0) - Voltar\n");
     printf("------------------------\n");
 
-    printf("**Escolha uma das opcoes acima: ");
+    printf("**Escolha uma das opções acima: ");
 }
 
 void opcaoMenuJutsu(int opcao)
@@ -465,14 +479,14 @@ void lerOpcaoJutsu()
 
 void menuCla()
 {
-    printf("-- MANTER CLA --\n");
+    printf("-- MANTER CLÃ --\n");
     printf("------------------------\n");
-    printf("(1) - Incluir Cla\n");
-    printf("(2) - Alterar Cla\n");
-    printf("(3) - Excluir Cla\n");
-    printf("(0) - voltar\n");
+    printf("(1) - Incluir Clã\n");
+    printf("(2) - Alterar Clã\n");
+    printf("(3) - Excluir Clã\n");
+    printf("(0) - Voltar\n");
     printf("------------------------\n");
-    printf("**Escolha uma das opcoes acima: ");
+    printf("**Escolha uma das opções acima: ");
 }
 
 void lerOpcaoCla()
@@ -496,7 +510,7 @@ void opcaoMenuCla(int opcao)
     switch (opcao)
     {
         case 1:
-            // incluirCla();
+            incluirCla();
             break;
 
         case 2:
@@ -520,15 +534,15 @@ void opcaoMenuCla(int opcao)
 
 void menuRelatorio()
 {
-    printf("-- MANTER RELATORIO --\n");
+    printf("-- MANTER RELATÓRIO --\n");
     printf("------------------------\n");
     printf("(1) - Listar Ninja\n");
-    printf("(2) - Listar Missao\n");
+    printf("(2) - Listar Missão\n");
     printf("(3) - Listar Jutsu\n");
-    printf("(4) - Listar Cla\n");
-    printf("(0) - voltar\n");
+    printf("(4) - Listar Clã\n");
+    printf("(0) - Voltar\n");
     printf("------------------------\n");
-    printf("**Escolha uma das opcoes acima: "); 
+    printf("**Escolha uma das opções acima: "); 
 }
 
 void opcaoMenuRelatorio(int opcao)
@@ -578,45 +592,100 @@ void lerOpcaoRelatorio()
     } while (opcao != 0);
 }
 
+void incluirNinja()
+{
+    if (_numNinjas == 0)
+    {
+        _ninja = (TNinja *)malloc(sizeof(TNinja));
+        if (_ninja == NULL)
+        {
+            ERRO(-99);
+            return;
+        }
+    }
+    else
+    {
+        TNinja *temp = (TNinja *)realloc(_ninja, (_numNinjas + 1) * sizeof(TNinja));
+        if (temp == NULL)
+        {
+            ERRO(-99);
+            return;
+        }
+        _ninja = temp;
+    }
+    
+    _ninja[_numNinjas] = criarNinja();
+    _numNinjas++;
+    
+    printf("**Ninja cadastrado com sucesso!**\n");
+    SPAUSE 
+}
+
+void incluirCla()
+{
+    if (_numCla == 0)
+    {
+        _cla = (TCla *)malloc(sizeof(TCla));
+    }
+    else
+    {
+        TCla *temp = (TCla *)realloc(_cla, (_numCla + 1) * sizeof(TCla));
+        if (temp == NULL)
+        {
+            ERRO(-99);
+            return;
+        }
+        _cla = temp;
+    }
+    
+    _cla[_numCla] = criarCla();
+    _numCla++;
+    
+    printf("**Clã cadastrado com sucesso!**\n");
+    SPAUSE
+    printf("\n");
+}
+
+
 TNinja criarNinja()
 {
     TNinja ninja;
     char strAux[1000];
     bool check;
 
-    while (1)
-    {
-        check = true;
-        int i;
-        do
-        {
-            printf("Digite o nome do ninja: ");
-            gets(strAux);
-            ninja.nome_ninja = (char *)malloc((strlen(strAux) + 1) * sizeof(char));
-            strcpy(ninja.nome_ninja, strAux);
 
-            check = true;
-            for (i = 0; i < _numNinjas; i++)
+    check = true;
+    int i;
+    do
+    {
+        printf("Digite o nome do ninja: ");
+        gets(strAux);
+        ninja.nome_ninja = (char *)malloc((strlen(strAux) + 1) * sizeof(char));
+        strcpy(ninja.nome_ninja, strAux);
+
+        check = true;
+        for (i = 0; i < _numNinjas; i++)
+        {
+            if (strcmp(_ninja[i].nome_ninja, ninja.nome_ninja) == 0)
             {
-                if (strcmp(_ninja[i].nome_ninja, ninja.nome_ninja))
-                {
-                    check = false;
-                    break;
-                }
+                check = false;
+                break;
             }
-            if (!check)
-            {
-                ERRO(-30);
-                SPAUSE
-                printf("\n");
-            }
-            else if (validarNome(ninja.nome_ninja))
-            {
-                ERRO(-31);
-                SPAUSE
-                printf("\n");
-            }
-        } while (validarNome(ninja.nome_ninja) || !check);
+       }
+        if (!check)
+        {
+            ERRO(-30);
+            SPAUSE
+            printf("\n");
+        }
+        else if (validarNome(ninja.nome_ninja))
+        {
+            ERRO(-31);
+            SPAUSE
+            printf("\n");
+        }
+        } 
+        while (validarNome(ninja.nome_ninja) || !check);
 
         char opcaoSimNao;
         do
@@ -637,30 +706,84 @@ TNinja criarNinja()
                 ninja.titulo_ninja = (char *)malloc((strlen(strAux) + 1) * sizeof(char));
                 strcpy(ninja.titulo_ninja, strAux);
             }
-        } while (validarNome(ninja.titulo_ninja));
+        } 
+        while (validarNome(ninja.titulo_ninja));
 
-        do
-        {
-            printf("Digite a data de nascimento do ninja(DD/MM/AAAA): ");
-            scanf("%d%d%d", &ninja.data_nascimento.dia, &ninja.data_nascimento.mes, &ninja.data_nascimento.ano);
-            fflush(stdin);
-        } while (validarData(ninja.data_nascimento.dia, ninja.data_nascimento.mes, ninja.data_nascimento.ano) == 1);
+    do
+    {
+        printf("Digite a data de nascimento do ninja(DD/MM/AAAA): ");
+        scanf("%d%d%d", &ninja.data_nascimento.dia, &ninja.data_nascimento.mes, &ninja.data_nascimento.ano);
+        fflush(stdin);
+    } 
+    while (validarData(ninja.data_nascimento.dia, ninja.data_nascimento.mes, ninja.data_nascimento.ano) == 1);
 
-        do
-        {
-            printf("Digite a quantidade de chakra do ninja(0 - 100): ");
-            scanf("%d", &ninja.chakra_ninja);
-            fflush(stdin);
-        } while (ninja.chakra_ninja >= 0 || ninja.chakra_ninja <= 100);
+    do
+    {
+        printf("Digite a quantidade de chakra do ninja(0 - 100): ");
+        scanf("%d", &ninja.chakra_ninja);
+        fflush(stdin);
+    }
+    while (validarChakra(ninja.chakra_ninja));
 
-        if (_numCla == 0)
+    if (_numCla == 0)
+    {
+        ERRO(-4);
+        printf("**VOCÊ SERÁ REDIRECIONADO PARA CRIAR UM CLÃ**\n");
+        SPAUSE
+        printf("\n");
+
+        _cla = (TCla *)malloc(sizeof(TCla));
+        if (_cla == NULL)
         {
-            ERRO(-4);
+            ERRO(-99);
             SPAUSE
-            criarCla();
+            printf("\n");
+            exit(1);
         }
+
+         _cla[_numCla] = criarCla();
+        _numCla++;
+        printf("**Clã criado com sucesso!**\n");
     }
 
+    printf("\n--- CLÃS DISPONÍVEIS ---\n");
+    for (int i = 0; i < _numCla; i++)
+    {
+        printf("(%d) - %s\n", i + 1, _cla[i].nome_cla);
+        printf("     Técnica Exclusiva: %s\n", _cla[i].tecnica_exclusiva);
+        printf("     Técnica Tradicional: %s\n", _cla[i].tecnica_tradicional);
+        printf("------------------------\n");
+    }
+
+    int escolhaCla;
+    char strEscolha[100];
+
+    do  
+    {
+        printf("Escolha o clã do ninja (1 a %d): ", _numCla);
+        gets(strEscolha);
+    
+        if (validarInteiro(strEscolha))
+        {
+            continue;
+        }
+    
+        escolhaCla = atoi(strEscolha);
+    
+        if (escolhaCla < 1 || escolhaCla > _numCla)
+        {
+            printf("**Escolha inválida! Digite um número entre 1 e %d**\n", _numCla);
+        }
+        else
+        {
+            break;
+        }
+    } 
+    while(1);
+
+    ninja.cla = &_cla[escolhaCla - 1];
+    printf("**Clã '%s' atribuído ao ninja %s!**\n", ninja.cla->nome_cla, ninja.nome_ninja);
+    
     return ninja;
 }
 
@@ -741,45 +864,45 @@ TJutsu criarJutsu()
     char strAux[1000];
     bool check = true;
 
-    while (1)
+    do
     {
-        do
+        printf("Nome do jutsu: ");
+        gets(strAux);
+        jutsu.nome_jutsu = (char *)malloc((strlen(strAux) + 1) * sizeof(char));
+        if (jutsu.nome_jutsu == NULL)
         {
-            printf("Nome do jutsu: ");
-            gets(strAux);
-            jutsu.nome_jutsu = (char *)malloc((strlen(strAux) + 1) * sizeof(char));
-            if (jutsu.nome_jutsu == NULL)
-            {
-                ERRO(-99);
-                exit(1);
-            }
-            strcpy(jutsu.nome_jutsu, strAux);
+            ERRO(-99);
+            exit(1);
+        }
+        strcpy(jutsu.nome_jutsu, strAux);
 
-            check = true;
+        check = true;
 
-            for (int i = 0; i < _numJutsus; i++)
+        for (int i = 0; i < _numJutsus; i++)
+        {
+            if (strcmp(_jutsu[i].nome_jutsu, jutsu.nome_jutsu) == 0)
             {
-                if (strcmp(_jutsu[i].nome_jutsu, jutsu.nome_jutsu) == 0)
-                {
-                    check = false;
-                    break;
-                }
+                check = false;
+                break;
             }
-            if (!check)
-            {
-                ERRO(-51);
-                SPAUSE
-                printf("\n");
-            }
+        }
+        if (!check)
+        {
+            ERRO(-51);
+            SPAUSE
+            printf("\n");
+        }
 
-            else if (validarNome(jutsu.nome_jutsu))
-            {
-                ERRO(-31);
-                SPAUSE
-                printf("\n");
-            }
-        } while (validarNome(jutsu.nome_jutsu) || !check);
-    }
+        else if (validarNome(jutsu.nome_jutsu))
+        {
+            ERRO(-31);
+            SPAUSE
+            printf("\n");
+        }
+    } 
+    while (validarNome(jutsu.nome_jutsu) || !check);
+
+    return jutsu;
 }
 
 bool validarNome(char *nome)
@@ -870,6 +993,97 @@ bool validarSimNao(char opcao)
     return check;
 }
 
+bool validarInteiro(char *str)
+{
+    bool check = false;
+    char strAux[1000];
+
+    if(str == NULL || str[0] == '\0' )
+    {
+        check = true;
+    }
+    else
+    {
+        for(int i = 0; str[i] != '\0'; i++)
+        {
+            if (!isdigit(str[i]))
+            {
+                check = true;
+                break;
+            }
+            
+        }
+    }
+    if (check)
+    {
+        ERRO(-7);
+        SPAUSE
+        printf("\n");
+    }
+
+    return check;
+}
+
+bool validarChakra(int chakra)
+{
+    if(chakra < 0 || chakra > 100)
+    {
+        ERRO(-6);
+        return true;
+    }
+
+    return false;
+}
+
+void liberarMemoria()
+{
+    liberarNinja();
+    liberarMissao();
+    liberarJutsu();
+    liberarCla();
+}
+
+void liberarNinja()
+{
+    for(int i = 0; i < _numNinjas; i++)
+    {
+        free(_ninja[i].nome_ninja);
+        free(_ninja[i].titulo_ninja);
+        free(_ninja[i].vila_ninja);
+    }
+    free(_ninja);
+}
+
+void liberarMissao()
+{
+    for(int i = 0; i < _numMissao; i++)
+    {
+        free(_missao[i].lider_missao);
+        free(_missao[i].titulo_missao);
+    }
+    free(_missao);
+}
+
+void liberarJutsu()
+{
+    for(int i = 0; i < _numJutsus; i++)
+    {
+        free(_jutsu[i].nome_jutsu);
+    }
+    free(_jutsu);
+}
+
+void liberarCla()
+{
+    for(int i = 0; i < _numCla; i++)
+    {
+        free(_cla[i].nome_cla);
+        free(_cla[i].tecnica_exclusiva);
+        free(_cla[i].tecnica_tradicional);
+    }
+    free(_cla);
+}
+
 void ERRO(int codigoErro)
 {
     CLS switch (codigoErro)
@@ -888,6 +1102,19 @@ void ERRO(int codigoErro)
 
     case -4:
         printf("**ERRO: NAO HA NENHUM CLA CADASTRADO**\n");
+        break;
+    
+    case -5:
+        printf("**ERRO: NAO HA NENHUM NINJA CADASTRADO**\n");
+        break;
+
+    case -6:
+        printf("**ERRO: VALOR DE CHAKRA TEM DE SER ENTRE 0 E 100**\n");
+        break;
+
+    case -7:
+        printf("**ERRO: DIGITE APENAS NUMEROS INTEIROS**");
+        break;
 
     case -30:
         printf("**ERRO: NINJA JA CADASTRADO**\n");

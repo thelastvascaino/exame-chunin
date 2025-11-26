@@ -93,8 +93,6 @@ void mantercla();
 void manterninja();
 void mantermissao();
 void manterrelatorios();
-void jutsunomerepedido();
-void liberarjutsus();
 void Elementos(int escolha_elemen, int contadorDeElemen);
 // manter justu
 void LermenuJutsu();
