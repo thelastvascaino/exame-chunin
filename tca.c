@@ -234,22 +234,22 @@ void carregarClas();    // dispara função para carregar clãs
 
 /*<limpeza de memória>*/
 
-void liberarMemoria();
-void liberarNinja();
-void liberarMissao();
-void liberarJutsu();
-void liberarCla();
+void liberarMemoria();  //dispara função para liberar memória
+void liberarNinja();    //dispara função para liberar memória de ninja
+void liberarMissao();   //dispara função para liberar memória de missão
+void liberarJutsu();    //dispara função para liberar memória de jutsu
+void liberarCla();      //dispara função para liberar memória de clã
 
 /*<controle de erros>*/
-void ERRO(int codigoErro); // exibe uma mensagem de erro
-bool validarNome(char *nome);
-bool validarData(int dia, int mes, int ano);
-bool validarHora(int hora, int minuto);
-bool validarSimNao(char opcao);
-bool validarInteiro(char *str);
-bool validaAlocacao(void *ptr);
-bool validarChakra(int chakra);
-bool validarPoder(int nivel_poder);
+void ERRO(int codigoErro);                      // exibe uma mensagem de erro
+bool validarNome(char *nome);                   //valida nome    
+bool validarData(int dia, int mes, int ano);    //valida data
+bool validarHora(int hora, int minuto);         //valida hora
+bool validarSimNao(char opcao);                 //valida s\n
+bool validarInteiro(char *str);                 //valida numero inteiro
+bool validaAlocacao(void *ptr);                 //valida alocação
+bool validarChakra(int chakra);                 //valida chakra
+bool validarPoder(int nivel_poder);             //valida poder
 
 /* <declaração das variáveis globais> */
 
@@ -327,7 +327,6 @@ void menu()
     printf("(5) - Exibir Relatorios\n");
     printf("(0) - Sair\n");
     printf("------------------------\n");
-
     printf("**Escolha uma das opções acima: ");
 }
 
@@ -633,7 +632,8 @@ void lerOpcaoCla()
 
         opcaoMenuCla(opcao);
         CLS
-    } while (opcao != 0);
+    } 
+    while (opcao != 0);
 }
 
 void opcaoMenuCla(int opcao)
@@ -649,7 +649,7 @@ void opcaoMenuCla(int opcao)
         break;
 
     case 3:
-        // excluirCla();
+        excluirCla();
         break;
 
     case 0:
@@ -4168,7 +4168,9 @@ void carregarMissoes()
             _missao = temp;
         }
 
-        char titulo[100], lider[100];
+        char titulo[100];
+        char lider[100];
+
         fscanf(pArq, "%[^;];%d;%d;%d;%d;%d;%[^;];%d;%d\n",
                titulo,
                &_missao[_numMissao].data_missao.dia,
@@ -4264,7 +4266,7 @@ void carregarClas()
         _cla[_numCla].tecnica_tradicional = strdup(tradicional);
         _numCla++;
     }
-
+    
     fclose(pArq);
 }
 
