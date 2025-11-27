@@ -209,10 +209,10 @@ void alterarJutsu();  // dispara função para alterar jutsu
 void alterarCla();    // dispara função para alterar clã
 
 /*<exclusão de dados>*/
-void excluirNinja();                    //dispara função para excluir ninjas
-void excluirMissao();                   //dispara função para excluir missão
-void excluirJutsu();                    //dispara função para excluir jutsu
-void excluirCla();                      //dispara funçaõ para exluir clã
+void excluirNinja();  // dispara função para excluir ninjas
+void excluirMissao(); // dispara função para excluir missão
+void excluirJutsu();  // dispara função para excluir jutsu
+void excluirCla();    // dispara funçaõ para exluir clã
 
 /*<listar dados>*/
 void listarNinja();  // dispara função para listar ninjas
@@ -437,7 +437,7 @@ void opcaoMenuMissao(int opcao)
         break;
 
     case 3:
-        // excluirMissao();
+        excluirMissao();
         break;
     case 0:
         break;
@@ -562,7 +562,7 @@ void opcaoMenuJutsu(int opcao)
         break;
 
     case 3:
-        // excluirJutsu();
+        excluirJutsu();
         break;
     case 0:
         break;
@@ -843,7 +843,7 @@ void alterarNinja()
 {
     CLS
 
-    if (_numNinjas == 0)
+        if (_numNinjas == 0)
     {
         ERRO(-5);
         SPAUSE
@@ -1285,34 +1285,19 @@ void alterarMissao()
 {
     CLS
 
-        if (_numMissao == 0)
+    if (_numMissao == 0)
     {
         ERRO(-10);
         SPAUSE
-        printf("\n");
         return;
     }
 
     printf("=== ALTERAR MISSÃO ===\n");
 
-    printf("\n--- MISSÕES CADASTRADAS ---\n");
     for (int i = 0; i < _numMissao; i++)
     {
         printf("(%d) - %s", i + 1, _missao[i].titulo_missao);
-        printf(" [");
-        switch (_missao[i].status)
-        {
-        case pendente:
-            printf(COLOR_YELLOW "Pendente" COLOR_RESET);
-            break;
-        case andamento:
-            printf(COLOR_BLUE "Em Andamento" COLOR_RESET);
-            break;
-        case concluida:
-            printf(COLOR_GREEN "Concluída" COLOR_RESET);
-            break;
-        }
-        printf("]\n");
+        printf(" [%d ninjas]\n", _missao[i].qtd_ninjas);
     }
 
     int escolhaMissao;
@@ -1330,9 +1315,7 @@ void alterarMissao()
 
         if (escolhaMissao < 1 || escolhaMissao > _numMissao)
         {
-            ERRO(-1);
-            SPAUSE
-            printf("\n");
+            printf("**Escolha inválida!**\n");
         }
         else
         {
@@ -1344,7 +1327,7 @@ void alterarMissao()
     TMissao *missao = &_missao[indice];
 
     printf("\nALTERAR MISSÃO: %s\n", missao->titulo_missao);
-    printf("═══════════════════════════════════════════\n");
+    printf("Ninjas na missão: %d\n", missao->qtd_ninjas);
 
     int opcao;
     char strOpcao[100];
@@ -1358,34 +1341,35 @@ void alterarMissao()
         printf("(3) - Hora\n");
         printf("(4) - Status\n");
         printf("(5) - Dificuldade\n");
+        printf("(6) - Gerenciar Ninjas\n");
         printf("(0) - Voltar\n");
-        printf("------------------------\n");
         printf("Escolha uma opção: ");
 
         gets(strOpcao);
 
         if (validarInteiro(strOpcao))
+        {
             continue;
-
+        }
         opcao = atoi(strOpcao);
 
         switch (opcao)
         {
         case 1:
         {
-            bool check;
+            int check;
             do
             {
                 printf("Título atual: %s\n", missao->titulo_missao);
                 printf("Novo título: ");
                 gets(strAux);
 
-                check = true;
+                check = 1;
                 for (int i = 0; i < _numMissao; i++)
                 {
                     if (i != indice && strcmp(_missao[i].titulo_missao, strAux) == 0)
                     {
-                        check = false;
+                        check = 0;
                         break;
                     }
                 }
@@ -1397,13 +1381,13 @@ void alterarMissao()
                 }
                 else if (validarNome(strAux))
                 {
-                    ERRO(-31);
                 }
                 else
                 {
+                    free(missao->titulo_missao);
                     missao->titulo_missao = (char *)malloc((strlen(strAux) + 1) * sizeof(char));
                     strcpy(missao->titulo_missao, strAux);
-                    printf(COLOR_GREEN "Título alterado para: %s\n" COLOR_RESET, missao->titulo_missao);
+                    printf("Título alterado para: %s\n", missao->titulo_missao);
                     break;
                 }
             } while (1);
@@ -1429,13 +1413,14 @@ void alterarMissao()
                 }
                 else
                 {
-                    printf(COLOR_GREEN "Data alterada para: %02d/%02d/%04d\n" COLOR_RESET,
+                    printf("Data alterada para: %02d/%02d/%04d\n",
                            missao->data_missao.dia,
                            missao->data_missao.mes,
                            missao->data_missao.ano);
                     break;
                 }
-            } while (1);
+            } 
+            while (1);
             break;
 
         case 3:
@@ -1455,7 +1440,7 @@ void alterarMissao()
                 }
                 else
                 {
-                    printf(COLOR_GREEN "Hora alterada para: %02d:%02d\n" COLOR_RESET,
+                    printf("Hora alterada para: %02d:%02d\n",
                            missao->hora_missao.hora,
                            missao->hora_missao.minuto);
                     break;
@@ -1468,56 +1453,32 @@ void alterarMissao()
             switch (missao->status)
             {
             case pendente:
-                printf(COLOR_YELLOW "Pendente\n" COLOR_RESET);
+                printf("Pendente\n");
                 break;
+
             case andamento:
-                printf(COLOR_BLUE "Em Andamento\n" COLOR_RESET);
+                printf("Em Andamento\n");
                 break;
+
             case concluida:
-                printf(COLOR_GREEN "Concluída\n" COLOR_RESET);
+                printf("Concluída\n");
                 break;
             }
 
-            printf("\n--- NOVO STATUS ---\n");
-            printf("(1) - " COLOR_YELLOW "Pendente\n" COLOR_RESET);
-            printf("(2) - " COLOR_BLUE "Em Andamento\n" COLOR_RESET);
-            printf("(3) - " COLOR_GREEN "Concluída\n" COLOR_RESET);
-
+            printf("Novo status: ");
             int status_opcao;
-            char strStatus[100];
-            do
+            scanf("%d", &status_opcao);
+            fflush(stdin);
+
+            if (status_opcao >= 1 && status_opcao <= 3)
             {
-                printf("Escolha o novo status (1-3): ");
-                gets(strStatus);
-
-                if (validarInteiro(strStatus))
-                    continue;
-
-                status_opcao = atoi(strStatus);
-
-                if (status_opcao >= 1 && status_opcao <= 3)
-                {
-                    missao->status = status_opcao;
-                    printf(COLOR_GREEN "Status alterado para: " COLOR_RESET);
-                    switch (missao->status)
-                    {
-                    case pendente:
-                        printf(COLOR_YELLOW "Pendente\n" COLOR_RESET);
-                        break;
-                    case andamento:
-                        printf(COLOR_BLUE "Em Andamento\n" COLOR_RESET);
-                        break;
-                    case concluida:
-                        printf(COLOR_GREEN "Concluída\n" COLOR_RESET);
-                        break;
-                    }
-                    break;
-                }
-                else
-                {
-                    ERRO(-1);
-                }
-            } while (1);
+                missao->status = status_opcao;
+                printf("Status alterado\n");
+            }
+            else
+            {
+                printf("Status inválido!\n");
+            }
             break;
 
         case 5:
@@ -1525,34 +1486,217 @@ void alterarMissao()
             switch (missao->dif_missao)
             {
             case S:
-                printf(COLOR_RED "Rank S\n" COLOR_RESET);
+                printf("Rank S\n");
                 break;
             case A:
-                printf(COLOR_MAGENTA "Rank A\n" COLOR_RESET);
+                printf("Rank A\n");
                 break;
-
             case B:
-                printf(COLOR_YELLOW "Rank B\n" COLOR_RESET);
+                printf("Rank B\n");
                 break;
             case C:
-                printf(COLOR_BLUE "Rank C\n" COLOR_RESET);
+                printf("Rank C\n");
                 break;
             case D:
-                printf(COLOR_GREEN "Rank D\n" COLOR_RESET);
+                printf("Rank D\n");
                 break;
             }
 
             printf("Nova dificuldade:\n");
             missao->dif_missao = lerDificuldade();
-            printf(COLOR_GREEN "Dificuldade alterada\n" COLOR_RESET);
+            printf("Dificuldade alterada\n");
+            break;
+
+        case 6:
+            printf("\n--- GERENCIAR NINJAS DA MISSÃO ---\n");
+            printf("Ninjas atuais (%d): ", missao->qtd_ninjas);
+            for (int i = 0; i < missao->qtd_ninjas; i++)
+            {
+                printf("%s", missao->ninjas_missao[i]->nome_ninja);
+                if (strcmp(missao->lider_missao, missao->ninjas_missao[i]->nome_ninja) == 0)
+                {
+                    printf(" [Líder]");
+                }
+                if (i < missao->qtd_ninjas - 1)
+                    printf(", ");
+            }
+            printf("\n");
+
+            printf("(1) - Adicionar ninja\n");
+            printf("(2) - Remover ninja\n");
+            printf("(3) - Alterar líder\n");
+            printf("Escolha: ");
+
+            int opcaoNinjas;
+            scanf("%d", &opcaoNinjas);
+            fflush(stdin);
+
+            switch (opcaoNinjas)
+            {
+            case 1:
+                if (_numNinjas == 0)
+                {
+                    printf("Não há ninjas cadastrados!\n");
+                    break;
+                }
+
+                printf("\nNinjas disponíveis:\n");
+                for (int i = 0; i < _numNinjas; i++)
+                {
+                    int ja_na_missao = 0;
+                    for (int j = 0; j < missao->qtd_ninjas; j++)
+                    {
+                        if (missao->ninjas_missao[j] == &_ninja[i])
+                        {
+                            ja_na_missao = 1;
+                            break;
+                        }
+                    }
+                    if (!ja_na_missao)
+                    {
+                        printf("(%d) - %s\n", i + 1, _ninja[i].nome_ninja);
+                    }
+                }
+
+                int escolhaAdd;
+                printf("Escolha o ninja para adicionar: ");
+                scanf("%d", &escolhaAdd);
+                fflush(stdin);
+
+                if (escolhaAdd >= 1 && escolhaAdd <= _numNinjas)
+                {
+                    TNinja *novo_ninja = &_ninja[escolhaAdd - 1];
+
+                    for (int i = 0; i < missao->qtd_ninjas; i++)
+                    {
+                        if (missao->ninjas_missao[i] == novo_ninja)
+                        {
+                            ERRO(-35);
+                            break;
+                        }
+                    }
+
+                    TNinja **temp = (TNinja **)realloc(missao->ninjas_missao, (missao->qtd_ninjas + 1) * sizeof(TNinja *));
+                    if (temp != NULL)
+                    {
+                        missao->ninjas_missao = temp;
+                        missao->ninjas_missao[missao->qtd_ninjas] = novo_ninja;
+                        missao->qtd_ninjas++;
+                        printf("Ninja %s adicionado à missão!\n", novo_ninja->nome_ninja);
+                    }
+                }
+                else
+                {
+                    ERRO(-1);
+                    SPAUSE
+                    printf("\n");
+                }
+                break;
+
+            case 2:
+                if (missao->qtd_ninjas <= 1)
+                {
+                    printf("Não é possível remover o único ninja da missão!\n");
+                    break;
+                }
+
+                printf("\nNinjas na missão:\n");
+                for (int i = 0; i < missao->qtd_ninjas; i++)
+                {
+                    printf("(%d) - %s", i + 1, missao->ninjas_missao[i]->nome_ninja);
+                    if (strcmp(missao->lider_missao, missao->ninjas_missao[i]->nome_ninja) == 0)
+                    {
+                        printf(" [Líder]");
+                    }
+                    printf("\n");
+                }
+
+                int escolhaRemove;
+                printf("Escolha o ninja para remover: ");
+                scanf("%d", &escolhaRemove);
+                fflush(stdin);
+
+                if (escolhaRemove >= 1 && escolhaRemove <= missao->qtd_ninjas)
+                {
+                    TNinja *ninja_remover = missao->ninjas_missao[escolhaRemove - 1];
+
+                    // Verifica se é o líder
+                    if (strcmp(missao->lider_missao, ninja_remover->nome_ninja) == 0)
+                    {
+                        printf("Não é possível remover o líder! Altere o líder primeiro.\n");
+                        break;
+                    }
+
+                    // Remove o ninja
+                    for (int i = escolhaRemove - 1; i < missao->qtd_ninjas - 1; i++)
+                    {
+                        missao->ninjas_missao[i] = missao->ninjas_missao[i + 1];
+                    }
+                    missao->qtd_ninjas--;
+
+                    TNinja **temp = (TNinja **)realloc(missao->ninjas_missao, missao->qtd_ninjas * sizeof(TNinja *));
+                    if (temp != NULL || missao->qtd_ninjas== 0)
+                    {
+                        missao->ninjas_missao = temp;
+                        printf("Ninja %s removido da missão!\n", ninja_remover->nome_ninja);
+                    }
+                }
+                else
+                {
+                    ERRO(-1);
+                    SPAUSE
+                    printf("\n");
+                }
+                break;
+
+            case 3: 
+                printf("\nNinjas na missão:\n");
+                for (int i = 0; i < missao->qtd_ninjas; i++)
+                {
+                    printf("(%d) - %s", i + 1, missao->ninjas_missao[i]->nome_ninja);
+                    if (strcmp(missao->lider_missao, missao->ninjas_missao[i]->nome_ninja) == 0)
+                    {
+                        printf(" [Líder Atual]");
+                    }
+                    printf("\n");
+                }
+
+                int escolhaLider;
+                printf("Escolha o novo líder: ");
+                scanf("%d", &escolhaLider);
+                fflush(stdin);
+
+                if (escolhaLider >= 1 && escolhaLider <= missao->qtd_ninjas)
+                {
+                    free(missao->lider_missao);
+                    missao->lider_missao = (char *)malloc((strlen(missao->ninjas_missao[escolhaLider - 1]->nome_ninja) + 1) * sizeof(char));
+                    strcpy(missao->lider_missao, missao->ninjas_missao[escolhaLider - 1]->nome_ninja);
+                    printf("Novo líder definido: %s\n", missao->lider_missao);
+                }
+                else
+                {
+                    ERRO(-1);
+                    SPAUSE
+                    printf("\n");
+                }
+                break;
+
+            default:
+                ERRO(-1);
+                SPAUSE
+                printf("\n");
+                break;
+            }
             break;
 
         case 0:
-            printf(COLOR_GREEN "Alterações salvas!\n" COLOR_RESET);
+            printf("Alterações salvas!\n");
             break;
 
         default:
             ERRO(-1);
+            SPAUSE
+            printf("\n");
             break;
         }
 
@@ -1569,7 +1713,7 @@ void alterarJutsu()
 {
     CLS
 
-    if (_numJutsus == 0)
+        if (_numJutsus == 0)
     {
         ERRO(-8);
         SPAUSE
@@ -1807,8 +1951,7 @@ void alterarJutsu()
 
 void alterarCla()
 {
-    CLS
-    if (_numCla == 0)
+    CLS if (_numCla == 0)
     {
         ERRO(-4);
         SPAUSE
@@ -1910,8 +2053,7 @@ void alterarCla()
                     printf("Nome alterado para: %s\n", cla->nome_cla);
                     break;
                 }
-            } 
-            while (1);
+            } while (1);
         }
         break;
 
@@ -1934,8 +2076,7 @@ void alterarCla()
                     printf("Técnica exclusiva alterada para: %s\n", cla->tecnica_exclusiva);
                     break;
                 }
-            } 
-            while (1);
+            } while (1);
             break;
 
         case 3:
@@ -2035,8 +2176,7 @@ TNinja criarNinja()
             ninja.titulo_ninja = (char *)malloc((strlen(strAux) + 1) * sizeof(char));
             strcpy(ninja.titulo_ninja, strAux);
         }
-    } 
-    while (validarNome(ninja.titulo_ninja));
+    } while (validarNome(ninja.titulo_ninja));
 
     do
     {
@@ -2044,8 +2184,7 @@ TNinja criarNinja()
         gets(strAux);
         ninja.vila_ninja = (char *)malloc((strlen(strAux) + 1) * sizeof(char));
         strcpy(ninja.vila_ninja, strAux);
-    } 
-    while (validarNome(ninja.vila_ninja));
+    } while (validarNome(ninja.vila_ninja));
 
     ninja.hierarquia_ninja = lerHierarquia();
 
@@ -2262,7 +2401,9 @@ void excluirNinja()
 
         if (escolhaNinja < 1 || escolhaNinja > _numNinjas)
         {
-            printf("**Escolha inválida!**\n");
+            ERRO(-1);
+            SPAUSE
+            printf("\n");
         }
         else
         {
@@ -2271,25 +2412,14 @@ void excluirNinja()
     } while (1);
 
     int indice = escolhaNinja - 1;
-    
+
     printf("\nExcluir ninja %s? (s/n): ", _ninja[indice].nome_ninja);
     char confirmacao;
     scanf("%c", &confirmacao);
     fflush(stdin);
-
-    if (confirmacao == 's' || confirmacao == 'S')
+    validarSimNao(tolower(confirmacao));
+    if (confirmacao == 's')
     {
-        free(_ninja[indice].nome_ninja);
-        if (_ninja[indice].titulo_ninja != NULL)
-        {
-            free(_ninja[indice].titulo_ninja);
-        }
-        free(_ninja[indice].vila_ninja);
-        if (_ninja[indice].elemento_ninja != NULL)
-        {
-            free(_ninja[indice].elemento_ninja);
-        }
-
         for (int i = indice; i < _numNinjas - 1; i++)
         {
             _ninja[i] = _ninja[i + 1];
@@ -2312,6 +2442,241 @@ void excluirNinja()
         }
 
         printf("**Ninja excluído!**\n");
+    }
+    else
+    {
+        printf("**Exclusão cancelada.**\n");
+    }
+
+    SPAUSE
+}
+
+void excluirMissao()
+{
+    CLS
+
+    if (_numMissao == 0)
+    {
+        printf("**NÃO HA NENHUMA MISSÃO CADASTRADA**\n");
+        SPAUSE
+        return;
+    }
+
+    printf("=== EXCLUIR MISSÃO ===\n");
+    for (int i = 0; i < _numMissao; i++)
+    {
+        printf("(%d) - %s\n", i + 1, _missao[i].titulo_missao);
+    }
+
+    int escolhaMissao;
+    char strEscolha[100];
+
+    do
+    {
+        printf("\nEscolha a missão para excluir (1 a %d): ", _numMissao);
+        gets(strEscolha);
+
+        if (validarInteiro(strEscolha))
+        {
+            continue;
+        }
+        escolhaMissao = atoi(strEscolha);
+
+        if (escolhaMissao < 1 || escolhaMissao > _numMissao)
+        {
+            ERRO(-1);
+            SPAUSE
+            printf("\n");
+        }
+        else
+        {
+            break;
+        }
+    } 
+    while(1);
+
+    int indice = escolhaMissao - 1;
+    
+    printf("\nExcluir missão %s? (s/n): ", _missao[indice].titulo_missao);
+    char confirmacao;
+    scanf("%c", &confirmacao);
+    fflush(stdin);
+
+    validarSimNao(tolower(confirmacao));
+    if (confirmacao == 's')
+    {
+        for (int i = indice; i < _numMissao - 1; i++)
+        {
+            _missao[i] = _missao[i + 1];
+        }
+
+        _numMissao--;
+
+        if (_numMissao > 0)
+        {
+            TMissao *temp = (TMissao *)realloc(_missao, _numMissao * sizeof(TMissao));
+            if (temp != NULL)
+            {
+                _missao = temp;
+            }
+        }
+        printf("**Missão excluída!**\n");
+    }
+    else
+    {
+        printf("**Exclusão cancelada.**\n");
+    }
+
+    SPAUSE
+}
+
+void excluirJutsu()
+{
+    CLS
+
+    if (_numJutsus == 0)
+    {
+        ERRO(-8);
+        SPAUSE
+        return;
+    }
+
+    printf("=== EXCLUIR JUTSU ===\n");
+    for (int i = 0; i < _numJutsus; i++)
+    {
+        printf("(%d) - %s\n", i + 1, _jutsu[i].nome_jutsu);
+    }
+
+    int escolhaJutsu;
+    char strEscolha[100];
+
+    do
+    {
+        printf("\nEscolha o jutsu para excluir (1 a %d): ", _numJutsus);
+        gets(strEscolha);
+
+        if (validarInteiro(strEscolha))
+            continue;
+
+        escolhaJutsu = atoi(strEscolha);
+
+        if (escolhaJutsu < 1 || escolhaJutsu > _numJutsus)
+        {
+            printf("**Escolha inválida!**\n");
+        }
+        else
+        {
+            break;
+        }
+    } while (1);
+
+    int indice = escolhaJutsu - 1;
+    
+    printf("\nExcluir jutsu %s? (s/n): ", _jutsu[indice].nome_jutsu);
+    char confirmacao;
+    scanf("%c", &confirmacao);
+    fflush(stdin);
+
+    validarSimNao(tolower(confirmacao));
+    if (confirmacao == 's')
+    {
+        for (int i = indice; i < _numJutsus - 1; i++)
+        {
+            _jutsu[i] = _jutsu[i + 1];
+        }
+
+        _numJutsus--;
+
+        if (_numJutsus > 0)
+        {
+            TJutsu *temp = (TJutsu *)realloc(_jutsu, _numJutsus * sizeof(TJutsu));
+            if (temp != NULL)
+            {
+                _jutsu = temp;
+            }
+        }
+
+        printf("**Jutsu excluído!**\n");
+    }
+    else
+    {
+        printf("**Exclusão cancelada.**\n");
+    }
+
+    SPAUSE
+}
+
+void excluirCla()
+{
+    CLS
+    if (_numCla == 0)
+    {
+        ERRO(-7);
+        SPAUSE
+        printf("\n");
+        return;
+    }
+
+    printf("=== EXCLUIR CLÃ ===\n");
+    for (int i = 0; i < _numCla; i++)
+    {
+        printf("(%d) - %s\n", i + 1, _cla[i].nome_cla);
+    }
+
+    int escolhaCla;
+    char strEscolha[100];
+
+    do
+    {
+        printf("\nEscolha o clã para excluir (1 a %d): ", _numCla);
+        gets(strEscolha);
+
+        if (validarInteiro(strEscolha))
+        {
+            continue;
+        }
+        escolhaCla = atoi(strEscolha);
+
+        if (escolhaCla < 1 || escolhaCla > _numCla)
+        {
+            ERRO(-1);
+            SPAUSE
+            printf("\n");
+        }
+        else
+        {
+            break;
+        }
+    } 
+    while (1);
+
+    int indice = escolhaCla - 1;
+    
+    printf("\nExcluir clã %s? (s/n): ", _cla[indice].nome_cla);
+    char confirmacao;
+    scanf("%c", &confirmacao);
+    fflush(stdin);
+
+    validarSimNao(tolower(confirmacao));
+    if (confirmacao == 's')
+    {
+        for (int i = indice; i < _numCla - 1; i++)
+        {
+            _cla[i] = _cla[i + 1];
+        }
+
+        _numCla--;
+
+        if (_numCla > 0)
+        {
+            TCla *temp = (TCla *)realloc(_cla, _numCla * sizeof(TCla));
+            if (temp != NULL)
+            {
+                _cla = temp;
+            }
+        }
+
+        printf("**Clã excluído!**\n");
     }
     else
     {
@@ -3820,6 +4185,10 @@ void ERRO(int codigoErro)
 
     case -34:
         printf("**ERRO: JÁ EXISTE UMA MISSÃO COM ESSE NOME**\n");
+        break;
+
+    case -35:
+        printf("**ERRO: ESSE NINJA JÁ ESTÁ EM MISSÃO**\n");
         break;
 
     case -51:
