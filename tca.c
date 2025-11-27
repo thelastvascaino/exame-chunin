@@ -230,7 +230,7 @@ void carregarTudo();    // dispara função para carregar todos
 void carregarNinjas();  // dispara função para carregar ninjas
 void carregarMissoes(); // dispara função para carregar missões
 void carregarJutsus();  // dispara função para carregar jutsus
-void carregarClas();
+void carregarClas();    // dispara função para carregar clãs
 
 /*<limpeza de memória>*/
 
@@ -268,10 +268,14 @@ int _numCla = 0;
 int main()
 {
     SetConsoleOutputCP(65001);
-    CLS int opcao = -1;
+    CLS 
 
-    // chamarTitulo();
-    // apagarTitulo(strlen("VOCE ESTÁ AQUI PARA MOSTRAR SEU VERDADEIRO JEITO NINJA, DATTEBAYO!"));
+    carregarTudo();
+    
+    int opcao = -1;
+
+    chamarTitulo();
+    apagarTitulo(strlen("VOCE ESTÁ AQUI PARA MOSTRAR SEU VERDADEIRO JEITO NINJA, DATTEBAYO!"));
 
     do
     {
@@ -4138,6 +4142,55 @@ void carregarNinjas()
     fclose(pArq);
 }
 
+void carregarMissoes()
+{
+    FILE *pArq = fopen("missoes.txt", "r");
+    if (pArq == NULL)
+    {
+        ERRO(404);
+        exit(1);
+    }
+
+    while (!feof(pArq))
+    {
+        if (_numMissao == 0)
+        {
+            _missao = (TMissao *)malloc(sizeof(TMissao));
+        }
+        else
+        {
+            TMissao *temp = (TMissao *)realloc(_missao, (_numMissao + 1) * sizeof(TMissao));
+            if (temp == NULL)
+            {
+                ERRO(404);
+                exit(1);
+            }
+            _missao = temp;
+        }
+
+        char titulo[100], lider[100];
+        fscanf(pArq, "%[^;];%d;%d;%d;%d;%d;%[^;];%d;%d\n",
+               titulo,
+               &_missao[_numMissao].data_missao.dia,
+               &_missao[_numMissao].data_missao.mes,
+               &_missao[_numMissao].data_missao.ano,
+               &_missao[_numMissao].hora_missao.hora,
+               &_missao[_numMissao].hora_missao.minuto,
+               lider,
+               &_missao[_numMissao].dif_missao,
+               &_missao[_numMissao].status);
+
+        _missao[_numMissao].titulo_missao = strdup(titulo);
+        _missao[_numMissao].lider_missao = strdup(lider);
+        _missao[_numMissao].ninjas_missao = NULL;
+        _missao[_numMissao].qtd_ninjas = 0;
+
+        _numMissao++;
+    }
+
+    fclose(pArq);
+}
+
 void carregarJutsus()
 {
     FILE *pArq = fopen("jutsus.txt", "r");
@@ -4215,53 +4268,12 @@ void carregarClas()
     fclose(pArq);
 }
 
-void carregarMissoes()
+void carregarTudo()
 {
-    FILE *pArq = fopen("missoes.txt", "r");
-    if (pArq == NULL)
-    {
-        ERRO(404);
-        exit(1);
-    }
-
-    while (!feof(pArq))
-    {
-        if (_numMissao == 0)
-        {
-            _missao = (TMissao *)malloc(sizeof(TMissao));
-        }
-        else
-        {
-            TMissao *temp = (TMissao *)realloc(_missao, (_numMissao + 1) * sizeof(TMissao));
-            if (temp == NULL)
-            {
-                ERRO(404);
-                exit(1);
-            }
-            _missao = temp;
-        }
-
-        char titulo[100], lider[100];
-        fscanf(pArq, "%[^;];%d;%d;%d;%d;%d;%[^;];%d;%d\n",
-               titulo,
-               &_missao[_numMissao].data_missao.dia,
-               &_missao[_numMissao].data_missao.mes,
-               &_missao[_numMissao].data_missao.ano,
-               &_missao[_numMissao].hora_missao.hora,
-               &_missao[_numMissao].hora_missao.minuto,
-               lider,
-               &_missao[_numMissao].dif_missao,
-               &_missao[_numMissao].status);
-
-        _missao[_numMissao].titulo_missao = strdup(titulo);
-        _missao[_numMissao].lider_missao = strdup(lider);
-        _missao[_numMissao].ninjas_missao = NULL;
-        _missao[_numMissao].qtd_ninjas = 0;
-
-        _numMissao++;
-    }
-
-    fclose(pArq);
+    carregarNinjas();
+    carregarMissoes();
+    carregarJutsus();
+    carregarClas();
 }
 
 bool validarHora(int hora, int minuto)
@@ -4473,7 +4485,6 @@ void ERRO(int codigoErro)
     case -33:
         printf("**ERRO: JÁ EXISTE UMA VILA COM ESSE NOME**\n");
         break;
-
     case -34:
         printf("**ERRO: JÁ EXISTE UMA MISSÃO COM ESSE NOME**\n");
         break;
