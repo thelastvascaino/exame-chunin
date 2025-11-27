@@ -137,7 +137,8 @@ typedef struct
     THora hora_missao;
     char *titulo_missao;
     char *lider_missao;
-    TNinja *ninjas_missao;
+    TNinja **ninjas_missao;
+    int qtd_ninjas;
     dificuldadeMissao dif_missao;
     statusMissao status;
 } TMissao;
@@ -208,10 +209,10 @@ void alterarJutsu();  // dispara função para alterar jutsu
 void alterarCla();    // dispara função para alterar clã
 
 /*<exclusão de dados>*/
-// void excluirNinja();                    //dispara função para excluir ninjas
-// void excluirMissao();                   //dispara função para excluir missão
-// void excluirJutsu();                    //dispara função para excluir jutsu
-// void excluirCla();                      //dispara funçaõ para exluir clã
+void excluirNinja();                    //dispara função para excluir ninjas
+void excluirMissao();                   //dispara função para excluir missão
+void excluirJutsu();                    //dispara função para excluir jutsu
+void excluirCla();                      //dispara funçaõ para exluir clã
 
 /*<listar dados>*/
 void listarNinja();  // dispara função para listar ninjas
@@ -381,7 +382,7 @@ void opcaoMenuNinja(int opcao)
         break;
 
     case 3:
-        // excluirNinja();
+        excluirNinja();
         break;
 
     case 0:
@@ -840,7 +841,7 @@ void menuAlteracaoNinja()
 
 void alterarNinja()
 {
-    CLS;
+    CLS
 
     if (_numNinjas == 0)
     {
@@ -1590,7 +1591,7 @@ void alterarJutsu()
         case genjutsu:
             printf("Genjutsu");
             break;
-            
+
         case ninjutsu:
             printf("Ninjutsu");
             break;
@@ -1621,8 +1622,7 @@ void alterarJutsu()
         {
             break;
         }
-    } 
-    while (1);
+    } while (1);
 
     int indice = escolhaJutsu - 1;
     TJutsu *jutsu = &_jutsu[indice];
@@ -1690,8 +1690,7 @@ void alterarJutsu()
                     printf("Nome alterado para: %s\n", jutsu->nome_jutsu);
                     break;
                 }
-            } 
-            while (1);
+            } while (1);
         }
         break;
 
@@ -1800,8 +1799,7 @@ void alterarJutsu()
         if (opcao == 0)
             break;
 
-    } 
-    while (1);
+    } while (1);
 
     printf("\n**Jutsu alterado com sucesso!**\n");
     SPAUSE
@@ -1809,8 +1807,7 @@ void alterarJutsu()
 
 void alterarCla()
 {
-    CLS;
-
+    CLS
     if (_numCla == 0)
     {
         ERRO(-4);
@@ -2038,7 +2035,8 @@ TNinja criarNinja()
             ninja.titulo_ninja = (char *)malloc((strlen(strAux) + 1) * sizeof(char));
             strcpy(ninja.titulo_ninja, strAux);
         }
-    } while (validarNome(ninja.titulo_ninja));
+    } 
+    while (validarNome(ninja.titulo_ninja));
 
     do
     {
@@ -2046,29 +2044,8 @@ TNinja criarNinja()
         gets(strAux);
         ninja.vila_ninja = (char *)malloc((strlen(strAux) + 1) * sizeof(char));
         strcpy(ninja.vila_ninja, strAux);
-
-        check = true;
-        for (i = 0; i < _numNinjas; i++)
-        {
-            if (strcmp(_ninja[i].vila_ninja, ninja.vila_ninja) == 0)
-            {
-                check = false;
-                break;
-            }
-        }
-        if (!check)
-        {
-            ERRO(-30);
-            SPAUSE
-            printf("\n");
-        }
-        else if (validarNome(ninja.vila_ninja))
-        {
-            ERRO(-33);
-            SPAUSE
-            printf("\n");
-        }
-    } while (validarNome(ninja.vila_ninja) || !check);
+    } 
+    while (validarNome(ninja.vila_ninja));
 
     ninja.hierarquia_ninja = lerHierarquia();
 
@@ -2085,7 +2062,7 @@ TNinja criarNinja()
     do
     {
         printf("Digite a data de nascimento do ninja(DD/MM/AAAA): ");
-        scanf("%d%d%d", &ninja.data_nascimento.dia,
+        scanf("%d/%d/%d", &ninja.data_nascimento.dia,
               &ninja.data_nascimento.mes,
               &ninja.data_nascimento.ano);
         fflush(stdin);
@@ -2145,7 +2122,10 @@ TNinja criarNinja()
 
         if (escolhaCla < 1 || escolhaCla > _numCla)
         {
-            printf("**Escolha inválida! Digite um número entre 1 e %d**\n", _numCla);
+            ERRO(-1);
+            SPAUSE
+            printf("\n");
+            printf("**Digite um número entre 1 e %d**\n", _numCla);
         }
         else
         {
@@ -2248,6 +2228,97 @@ TNinja criarNinja()
     printf("**NINJA CRIADO COM SUCESSO**\n");
 
     return ninja;
+}
+
+void excluirNinja()
+{
+    CLS
+
+    if (_numNinjas == 0)
+    {
+        ERRO(-5);
+        SPAUSE
+        return;
+    }
+
+    printf("=== EXCLUIR NINJA ===\n");
+    for (int i = 0; i < _numNinjas; i++)
+    {
+        printf("(%d) - %s\n", i + 1, _ninja[i].nome_ninja);
+    }
+
+    int escolhaNinja;
+    char strEscolha[100];
+
+    do
+    {
+        printf("\nEscolha o ninja para excluir (1 a %d): ", _numNinjas);
+        gets(strEscolha);
+
+        if (validarInteiro(strEscolha))
+            continue;
+
+        escolhaNinja = atoi(strEscolha);
+
+        if (escolhaNinja < 1 || escolhaNinja > _numNinjas)
+        {
+            printf("**Escolha inválida!**\n");
+        }
+        else
+        {
+            break;
+        }
+    } while (1);
+
+    int indice = escolhaNinja - 1;
+    
+    printf("\nExcluir ninja %s? (s/n): ", _ninja[indice].nome_ninja);
+    char confirmacao;
+    scanf("%c", &confirmacao);
+    fflush(stdin);
+
+    if (confirmacao == 's' || confirmacao == 'S')
+    {
+        free(_ninja[indice].nome_ninja);
+        if (_ninja[indice].titulo_ninja != NULL)
+        {
+            free(_ninja[indice].titulo_ninja);
+        }
+        free(_ninja[indice].vila_ninja);
+        if (_ninja[indice].elemento_ninja != NULL)
+        {
+            free(_ninja[indice].elemento_ninja);
+        }
+
+        for (int i = indice; i < _numNinjas - 1; i++)
+        {
+            _ninja[i] = _ninja[i + 1];
+        }
+
+        _numNinjas--;
+
+        if (_numNinjas > 0)
+        {
+            TNinja *temp = (TNinja *)realloc(_ninja, _numNinjas * sizeof(TNinja));
+            if (temp != NULL)
+            {
+                _ninja = temp;
+            }
+        }
+        else
+        {
+            free(_ninja);
+            _ninja = NULL;
+        }
+
+        printf("**Ninja excluído!**\n");
+    }
+    else
+    {
+        printf("**Exclusão cancelada.**\n");
+    }
+
+    SPAUSE
 }
 
 TCla criarCla()
@@ -2480,24 +2551,30 @@ TMissao criarMissao()
         fflush(stdin);
     } while (validarHora(missao.hora_missao.hora, missao.hora_missao.minuto));
 
+    missao.ninjas_missao = NULL;
+    missao.qtd_ninjas = 0;
+
     if (_numNinjas == 0)
     {
         ERRO(-5);
-        printf("**CRIANDO UM NOVO NINJA COMO LÍDER**\n");
+        printf("**CRIANDO UM NOVO NINJA**\n");
         SPAUSE
-        printf("\n");
 
         _ninja = (TNinja *)malloc(sizeof(TNinja));
         _ninja[_numNinjas] = criarNinja();
         _numNinjas++;
 
+        missao.ninjas_missao = (TNinja **)malloc(sizeof(TNinja *));
+        missao.ninjas_missao[0] = &_ninja[0];
+        missao.qtd_ninjas = 1;
+
         missao.lider_missao = (char *)malloc((strlen(_ninja[0].nome_ninja) + 1) * sizeof(char));
         strcpy(missao.lider_missao, _ninja[0].nome_ninja);
-        missao.ninjas_missao = &_ninja[0];
     }
     else
     {
-        printf("\n--- NINJAS DISPONÍVEIS PARA LIDERAR ---\n");
+        printf("\n--- SELECIONAR NINJAS PARA A MISSÃO ---\n");
+
         for (int i = 0; i < _numNinjas; i++)
         {
             printf("(%d) - %s", i + 1, _ninja[i].nome_ninja);
@@ -2507,18 +2584,15 @@ TMissao criarMissao()
             case estudante:
                 printf("Estudante");
                 break;
-
             case genin:
                 printf("Genin");
                 break;
-
             case chunin:
                 printf("Chunin");
                 break;
             case jounin:
                 printf("Jounin");
                 break;
-
             case anbu:
                 printf("ANBU");
                 break;
@@ -2532,6 +2606,7 @@ TMissao criarMissao()
             printf(" - %s]\n", _ninja[i].vila_ninja);
         }
 
+        printf("\n--- SELECIONAR LÍDER DA MISSÃO ---\n");
         int escolhaLider;
         char strLider[100];
         do
@@ -2546,13 +2621,152 @@ TMissao criarMissao()
 
             if (escolhaLider < 1 || escolhaLider > _numNinjas)
             {
-                printf("**Escolha inválida!**\n");
+                ERRO(-1);
+                SPAUSE
+                printf("\n");
             }
             else
             {
+                missao.ninjas_missao = (TNinja **)malloc(sizeof(TNinja *));
+                missao.ninjas_missao[0] = &_ninja[escolhaLider - 1];
+                missao.qtd_ninjas = 1;
+
                 missao.lider_missao = (char *)malloc((strlen(_ninja[escolhaLider - 1].nome_ninja) + 1) * sizeof(char));
                 strcpy(missao.lider_missao, _ninja[escolhaLider - 1].nome_ninja);
-                missao.ninjas_missao = &_ninja[escolhaLider - 1];
+                break;
+            }
+        } while (1);
+
+        char opcaoMaisNinjas;
+        do
+        {
+            printf("\nDeseja adicionar mais ninjas à missão? (s/n): ");
+            scanf("%c", &opcaoMaisNinjas);
+            fflush(stdin);
+
+            if (validarSimNao(tolower(opcaoMaisNinjas)))
+                continue;
+
+            if (tolower(opcaoMaisNinjas) == 's')
+            {
+                printf("\n--- ADICIONAR MAIS NINJAS ---\n");
+
+                int ninjas_disponiveis = 0;
+                for (int i = 0; i < _numNinjas; i++)
+                {
+                    int ja_esta_na_missao = 0;
+                    for (int j = 0; j < missao.qtd_ninjas; j++)
+                    {
+                        if (missao.ninjas_missao[j] == &_ninja[i])
+                        {
+                            ja_esta_na_missao = 1;
+                            break;
+                        }
+                    }
+
+                    if (!ja_esta_na_missao)
+                    {
+                        printf("(%d) - %s", i + 1, _ninja[i].nome_ninja);
+                        printf(" [");
+                        switch (_ninja[i].hierarquia_ninja)
+                        {
+                        case estudante:
+                            printf("Estudante");
+                            break;
+
+                        case genin:
+                            printf("Genin");
+                            break;
+
+                        case chunin:
+                            printf("Chunin");
+                            break;
+
+                        case jounin:
+                            printf("Jounin");
+                            break;
+
+                        case anbu:
+                            printf("ANBU");
+                            break;
+
+                        case tokubetsu_Jonin:
+                            printf("Tokubetsu Jounin");
+                            break;
+
+                        case kage:
+                            printf("Kage");
+                            break;
+                        }
+                        printf(" - %s]\n", _ninja[i].vila_ninja);
+                        ninjas_disponiveis++;
+                    }
+                }
+
+                if (ninjas_disponiveis == 0)
+                {
+                    printf("**Todos os ninjas já estão na missão!**\n");
+                    break;
+                }
+
+                int escolhaNinja;
+                char strNinja[100];
+                do
+                {
+                    printf("Escolha um ninja para adicionar (1 a %d): ", _numNinjas);
+                    gets(strNinja);
+
+                    if (validarInteiro(strNinja))
+                        continue;
+
+                    escolhaNinja = atoi(strNinja);
+
+                    if (escolhaNinja < 1 || escolhaNinja > _numNinjas)
+                    {
+                        ERRO(-1);
+                        SPAUSE
+                        printf("\n");
+                    }
+                    else
+                    {
+                        int ja_esta_na_missao = 0;
+                        for (int j = 0; j < missao.qtd_ninjas; j++)
+                        {
+                            if (missao.ninjas_missao[j] == &_ninja[escolhaNinja - 1])
+                            {
+                                ja_esta_na_missao = 1;
+                                break;
+                            }
+                        }
+
+                        if (ja_esta_na_missao)
+                        {
+                            printf("**Este ninja já está na missão!**\n");
+                        }
+                        else
+                        {
+                            TNinja **temp = (TNinja **)realloc(missao.ninjas_missao, (missao.qtd_ninjas + 1) * sizeof(TNinja *));
+                            if (temp == NULL)
+                            {
+                                ERRO(-99);
+                                exit(1);
+                            }
+                            missao.ninjas_missao = temp;
+                            missao.ninjas_missao[missao.qtd_ninjas] = &_ninja[escolhaNinja - 1];
+                            missao.qtd_ninjas++;
+
+                            printf("Ninja %s adicionado à missão!\n", _ninja[escolhaNinja - 1].nome_ninja);
+                            break;
+                        }
+                    }
+                } while (1);
+
+                printf("\nDeseja adicionar outro ninja? (s/n): ");
+                scanf("%c", &opcaoMaisNinjas);
+                fflush(stdin);
+            }
+            else
+            {
                 break;
             }
         } while (1);
@@ -3340,35 +3554,56 @@ bool validarData(int dia, int mes, int ano)
 {
     bool check = false;
 
-    if (ano <= 1500 || ano >= 2025)
+    // Validação do ano
+    if (ano < 1500 || ano > 2025)
     {
         check = true;
     }
-    else if (mes <= 1 || mes >= 12)
+    else if (mes < 1 || mes > 12)
     {
         check = true;
     }
-
-    if (mes == 2)
+    else if (dia < 1)
     {
-        if (ano % 4 == 0)
+        check = true;
+    }
+    else
+    {
+        switch (mes)
         {
-            if (dia <= 1 || dia >= 29)
+        case 2:
+            if ((ano % 4 == 0 && ano % 100 != 0) || (ano % 400 == 0))
+            {
+                if (dia > 29)
+                {
+                    check = true;
+                }
+            }
+            else
+            {
+                if (dia > 28)
+                {
+                    check = true;
+                }
+            }
+            break;
+
+        case 4:
+        case 6:
+        case 9:
+        case 11:
+            if (dia > 30)
             {
                 check = true;
             }
-        }
-        else if (dia <= 1 || dia >= 28)
-        {
-            check = true;
-        }
-    }
+            break;
 
-    else if (mes == 4 || mes == 6 || mes == 9 || mes == 11)
-    {
-        if (dia <= 1 || dia >= 30)
-        {
-            check = true;
+        default:
+            if (dia > 31)
+            {
+                check = true;
+            }
+            break;
         }
     }
 
