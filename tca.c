@@ -220,6 +220,14 @@ void listarMissao(); // dispara função para listar missão
 void listarJutsu();  // dispara função para listar jutsu
 void listarCla();    // dispara função para listar clã
 
+/*<manipulação de pArq>*/
+void salvarTudo();     //dispara função para salvar dados
+void salvarNinjas();    //dispara função para salvar ninjas
+void salvarMissoes();   //dispara função para salvar missões
+void salvarJutsus();    //dispara função para salvar jutsus
+void salvarClas();      //dispara função para salvar clãs
+
+
 /*<limpeza de memória>*/
 
 void liberarMemoria();
@@ -269,7 +277,8 @@ int main()
         CLS
 
     } while (opcao != 0);
-
+    
+    salvarTudo();
     liberarMemoria();
 
     return 0;
@@ -3982,6 +3991,111 @@ bool validarData(int dia, int mes, int ano)
     return check;
 }
 
+void salvarNinjas()
+{
+    FILE *pArq = fopen("ninjas.txt", "w");
+    if (pArq == NULL)
+    {
+        ERRO(404);
+        exit(1);
+    }
+
+    for (int i = 0; i < _numNinjas; i++)
+    {
+        fprintf(pArq, "%s;", _ninja[i].nome_ninja);
+        fprintf(pArq, "%s;", _ninja[i].vila_ninja);
+        fprintf(pArq, "%d;%d;%d;%d;%d\n",
+                _ninja[i].hierarquia_ninja,
+                _ninja[i].status,
+                _ninja[i].chakra_ninja,
+                _ninja[i].data_nascimento.dia,
+                _ninja[i].data_nascimento.mes,
+                _ninja[i].data_nascimento.ano);
+    }
+
+    fclose(pArq);
+}
+
+void salvarJutsus()
+{
+    FILE *pArq = fopen("jutsus.txt", "w");
+    if (pArq == NULL)
+    { 
+        ERRO(404);
+        exit(1);
+    }
+
+    for (int i = 0; i < _numJutsus; i++)
+    {
+        fprintf(pArq, "%s;%d;%d;%d;%d\n",
+                _jutsu[i].nome_jutsu,
+                _jutsu[i].tipo,
+                _jutsu[i].elemento_jutsu,
+                _jutsu[i].chakra_jutsu,
+                _jutsu[i].nivel_poder);
+    }
+
+    fclose(pArq);
+}
+
+void salvarClas()
+{
+    FILE *pArq = fopen("clas.txt", "w");
+    if (pArq == NULL)
+    {
+        ERRO(404);
+        exit(1);
+    }
+
+    for (int i = 0; i < _numCla; i++)
+    {
+        fprintf(pArq, "%s;%s;%s\n",
+                _cla[i].nome_cla,
+                _cla[i].tecnica_exclusiva,
+                _cla[i].tecnica_tradicional);
+    }
+
+    fclose(pArq);
+}
+
+
+void salvarMissoes()
+{
+    FILE *pArq = fopen("missoes.txt", "w");
+    if (pArq == NULL)
+    {
+        ERRO(404);
+        exit(1);
+    }
+
+    for (int i = 0; i < _numMissao; i++)
+    {
+        fprintf(pArq, "%s;%d;%d;%d;%d;%d;%s;%d;%d\n",
+                _missao[i].titulo_missao,
+                _missao[i].data_missao.dia,
+                _missao[i].data_missao.mes,
+                _missao[i].data_missao.ano,
+                _missao[i].hora_missao.hora,
+                _missao[i].hora_missao.minuto,
+                _missao[i].lider_missao,
+                _missao[i].dif_missao,
+                _missao[i].status);
+    }
+
+    fclose(pArq);
+}
+
+void salvarTudo()
+{
+    salvarNinjas();
+    salvarJutsus();
+    salvarClas();
+    salvarMissoes();
+    printf("Todos os dados salvos!\n");
+}
+
+
+
 bool validarHora(int hora, int minuto)
 {
     bool check = false;
@@ -4197,6 +4311,10 @@ void ERRO(int codigoErro)
 
     case -99:
         printf("**ERRO: FALHA NA ALOCACAO**\n");
+        break;
+    
+    case 404:
+        printf("**ERRO: FALHA DE ABERTURA**");
         break;
 
     default:
