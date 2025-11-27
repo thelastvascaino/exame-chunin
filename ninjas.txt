@@ -1,1 +1,2 @@
 link;konoha;7;1;100;25;2
+arthur;if;5;1;50;24;7
