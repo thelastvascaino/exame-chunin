@@ -220,13 +220,17 @@ void listarMissao(); // dispara função para listar missão
 void listarJutsu();  // dispara função para listar jutsu
 void listarCla();    // dispara função para listar clã
 
-/*<manipulação de pArq>*/
-void salvarTudo();     //dispara função para salvar dados
-void salvarNinjas();    //dispara função para salvar ninjas
-void salvarMissoes();   //dispara função para salvar missões
-void salvarJutsus();    //dispara função para salvar jutsus
-void salvarClas();      //dispara função para salvar clãs
-
+/*<manipulação de arquivos>*/
+void salvarTudo();      // dispara função para salvar dados
+void salvarNinjas();    // dispara função para salvar ninjas
+void salvarMissoes();   // dispara função para salvar missões
+void salvarJutsus();    // dispara função para salvar jutsus
+void salvarClas();      // dispara função para salvar clãs
+void carregarTudo();    // dispara função para carregar todos
+void carregarNinjas();  // dispara função para carregar ninjas
+void carregarMissoes(); // dispara função para carregar missões
+void carregarJutsus();  // dispara função para carregar jutsus
+void carregarClas();
 
 /*<limpeza de memória>*/
 
@@ -243,6 +247,7 @@ bool validarData(int dia, int mes, int ano);
 bool validarHora(int hora, int minuto);
 bool validarSimNao(char opcao);
 bool validarInteiro(char *str);
+bool validaAlocacao(void *ptr);
 bool validarChakra(int chakra);
 bool validarPoder(int nivel_poder);
 
@@ -277,7 +282,7 @@ int main()
         CLS
 
     } while (opcao != 0);
-    
+
     salvarTudo();
     liberarMemoria();
 
@@ -1294,7 +1299,7 @@ void alterarMissao()
 {
     CLS
 
-    if (_numMissao == 0)
+        if (_numMissao == 0)
     {
         ERRO(-10);
         SPAUSE
@@ -1428,8 +1433,7 @@ void alterarMissao()
                            missao->data_missao.ano);
                     break;
                 }
-            } 
-            while (1);
+            } while (1);
             break;
 
         case 3:
@@ -1644,7 +1648,7 @@ void alterarMissao()
                     missao->qtd_ninjas--;
 
                     TNinja **temp = (TNinja **)realloc(missao->ninjas_missao, missao->qtd_ninjas * sizeof(TNinja *));
-                    if (temp != NULL || missao->qtd_ninjas== 0)
+                    if (temp != NULL || missao->qtd_ninjas == 0)
                     {
                         missao->ninjas_missao = temp;
                         printf("Ninja %s removido da missão!\n", ninja_remover->nome_ninja);
@@ -1658,7 +1662,7 @@ void alterarMissao()
                 }
                 break;
 
-            case 3: 
+            case 3:
                 printf("\nNinjas na missão:\n");
                 for (int i = 0; i < missao->qtd_ninjas; i++)
                 {
@@ -2382,7 +2386,7 @@ void excluirNinja()
 {
     CLS
 
-    if (_numNinjas == 0)
+        if (_numNinjas == 0)
     {
         ERRO(-5);
         SPAUSE
@@ -2464,7 +2468,7 @@ void excluirMissao()
 {
     CLS
 
-    if (_numMissao == 0)
+        if (_numMissao == 0)
     {
         printf("**NÃO HA NENHUMA MISSÃO CADASTRADA**\n");
         SPAUSE
@@ -2501,11 +2505,10 @@ void excluirMissao()
         {
             break;
         }
-    } 
-    while(1);
+    } while (1);
 
     int indice = escolhaMissao - 1;
-    
+
     printf("\nExcluir missão %s? (s/n): ", _missao[indice].titulo_missao);
     char confirmacao;
     scanf("%c", &confirmacao);
@@ -2543,7 +2546,7 @@ void excluirJutsu()
 {
     CLS
 
-    if (_numJutsus == 0)
+        if (_numJutsus == 0)
     {
         ERRO(-8);
         SPAUSE
@@ -2580,7 +2583,7 @@ void excluirJutsu()
     } while (1);
 
     int indice = escolhaJutsu - 1;
-    
+
     printf("\nExcluir jutsu %s? (s/n): ", _jutsu[indice].nome_jutsu);
     char confirmacao;
     scanf("%c", &confirmacao);
@@ -2617,8 +2620,7 @@ void excluirJutsu()
 
 void excluirCla()
 {
-    CLS
-    if (_numCla == 0)
+    CLS if (_numCla == 0)
     {
         ERRO(-7);
         SPAUSE
@@ -2656,11 +2658,10 @@ void excluirCla()
         {
             break;
         }
-    } 
-    while (1);
+    } while (1);
 
     int indice = escolhaCla - 1;
-    
+
     printf("\nExcluir clã %s? (s/n): ", _cla[indice].nome_cla);
     char confirmacao;
     scanf("%c", &confirmacao);
@@ -4016,11 +4017,36 @@ void salvarNinjas()
     fclose(pArq);
 }
 
+void salvarMissoes()
+{
+    FILE *pArq = fopen("missoes.txt", "w");
+    if (pArq == NULL)
+    {
+        ERRO(404);
+        exit(1);
+    }
+
+    for (int i = 0; i < _numMissao; i++)
+    {
+        fprintf(pArq, "%s;%d;%d;%d;%d;%d;%s;%d;%d\n",
+                _missao[i].titulo_missao,
+                _missao[i].data_missao.dia,
+                _missao[i].data_missao.mes,
+                _missao[i].data_missao.ano,
+                _missao[i].hora_missao.hora,
+                _missao[i].hora_missao.minuto,
+                _missao[i].lider_missao,
+                _missao[i].dif_missao,
+                _missao[i].status);
+    }
+
+    fclose(pArq);
+}
 void salvarJutsus()
 {
     FILE *pArq = fopen("jutsus.txt", "w");
     if (pArq == NULL)
-    { 
+    {
         ERRO(404);
         exit(1);
     }
@@ -4058,33 +4084,6 @@ void salvarClas()
     fclose(pArq);
 }
 
-
-void salvarMissoes()
-{
-    FILE *pArq = fopen("missoes.txt", "w");
-    if (pArq == NULL)
-    {
-        ERRO(404);
-        exit(1);
-    }
-
-    for (int i = 0; i < _numMissao; i++)
-    {
-        fprintf(pArq, "%s;%d;%d;%d;%d;%d;%s;%d;%d\n",
-                _missao[i].titulo_missao,
-                _missao[i].data_missao.dia,
-                _missao[i].data_missao.mes,
-                _missao[i].data_missao.ano,
-                _missao[i].hora_missao.hora,
-                _missao[i].hora_missao.minuto,
-                _missao[i].lider_missao,
-                _missao[i].dif_missao,
-                _missao[i].status);
-    }
-
-    fclose(pArq);
-}
-
 void salvarTudo()
 {
     salvarNinjas();
@@ -4094,7 +4093,176 @@ void salvarTudo()
     printf("Todos os dados salvos!\n");
 }
 
+void carregarNinjas()
+{
+    FILE *pArq = fopen("ninjas.txt", "r");
+    if (pArq == NULL)
+        return;
 
+    while (!feof(pArq))
+    {
+        if (_numNinjas == 0)
+        {
+            _ninja = (TNinja *)malloc(sizeof(TNinja));
+        }
+        else
+        {
+            TNinja *temp = (TNinja *)realloc(_ninja, (_numNinjas + 1) * sizeof(TNinja));
+            if (temp == NULL)
+                break;
+            _ninja = temp;
+        }
+
+        char nome[100];
+        char vila[100];
+
+        fscanf(pArq, "%[^;];%[^;];%d;%d;%d;%d;%d\n",
+               nome, vila,
+               &_ninja[_numNinjas].hierarquia_ninja,
+               &_ninja[_numNinjas].status,
+               &_ninja[_numNinjas].chakra_ninja,
+               &_ninja[_numNinjas].data_nascimento.dia,
+               &_ninja[_numNinjas].data_nascimento.mes,
+               &_ninja[_numNinjas].data_nascimento.ano);
+
+        _ninja[_numNinjas].nome_ninja = strdup(nome);
+        _ninja[_numNinjas].vila_ninja = strdup(vila);
+        _ninja[_numNinjas].titulo_ninja = NULL;
+        _ninja[_numNinjas].cla = NULL;
+        _ninja[_numNinjas].jutsu_ninja = NULL;
+        _ninja[_numNinjas].elemento_ninja = NULL;
+
+        _numNinjas++;
+    }
+
+    fclose(pArq);
+}
+
+void carregarJutsus()
+{
+    FILE *pArq = fopen("jutsus.txt", "r");
+    if (pArq == NULL)
+    {
+        ERRO(404);
+        exit(1);
+    }
+
+    while (!feof(pArq))
+    {
+        if (_numJutsus == 0)
+        {
+            _jutsu = (TJutsu *)malloc(sizeof(TJutsu));
+        }
+        else
+        {
+            TJutsu *temp = (TJutsu *)realloc(_jutsu, (_numJutsus + 1) * sizeof(TJutsu));
+            if (temp == NULL)
+            {
+                ERRO(-99);
+                exit(1);
+            }
+            _jutsu = temp;
+        }
+
+        char nome[100];
+        fscanf(pArq, "%[^;];%d;%d;%d;%d\n",
+               nome,
+               &_jutsu[_numJutsus].tipo,
+               &_jutsu[_numJutsus].elemento_jutsu,
+               &_jutsu[_numJutsus].chakra_jutsu,
+               &_jutsu[_numJutsus].nivel_poder);
+
+        _jutsu[_numJutsus].nome_jutsu = strdup(nome);
+        _numJutsus++;
+    }
+
+    fclose(pArq);
+}
+
+void carregarClas()
+{
+    FILE *pArq = fopen("clas.txt", "r");
+    if (pArq == NULL)
+    {
+        ERRO(404);
+        exit(1);
+    }
+
+    while (!feof(pArq))
+    {
+        if (_numCla == 0)
+        {
+            _cla = (TCla *)malloc(sizeof(TCla));
+        }
+        else
+        {
+            TCla *temp = (TCla *)realloc(_cla, (_numCla + 1) * sizeof(TCla));
+            if (temp == NULL)
+                break;
+            _cla = temp;
+        }
+
+        char nome[100], exclusiva[100], tradicional[100];
+        fscanf(pArq, "%[^;];%[^;];%[^\n]\n",
+               nome, exclusiva, tradicional);
+
+        _cla[_numCla].nome_cla = strdup(nome);
+        _cla[_numCla].tecnica_exclusiva = strdup(exclusiva);
+        _cla[_numCla].tecnica_tradicional = strdup(tradicional);
+        _numCla++;
+    }
+
+    fclose(pArq);
+}
+
+void carregarMissoes()
+{
+    FILE *pArq = fopen("missoes.txt", "r");
+    if (pArq == NULL)
+    {
+        ERRO(404);
+        exit(1);
+    }
+
+    while (!feof(pArq))
+    {
+        if (_numMissao == 0)
+        {
+            _missao = (TMissao *)malloc(sizeof(TMissao));
+        }
+        else
+        {
+            TMissao *temp = (TMissao *)realloc(_missao, (_numMissao + 1) * sizeof(TMissao));
+            if (temp == NULL)
+            {
+                ERRO(404);
+                exit(1);
+            }
+            _missao = temp;
+        }
+
+        char titulo[100], lider[100];
+        fscanf(pArq, "%[^;];%d;%d;%d;%d;%d;%[^;];%d;%d\n",
+               titulo,
+               &_missao[_numMissao].data_missao.dia,
+               &_missao[_numMissao].data_missao.mes,
+               &_missao[_numMissao].data_missao.ano,
+               &_missao[_numMissao].hora_missao.hora,
+               &_missao[_numMissao].hora_missao.minuto,
+               lider,
+               &_missao[_numMissao].dif_missao,
+               &_missao[_numMissao].status);
+
+        _missao[_numMissao].titulo_missao = strdup(titulo);
+        _missao[_numMissao].lider_missao = strdup(lider);
+        _missao[_numMissao].ninjas_missao = NULL;
+        _missao[_numMissao].qtd_ninjas = 0;
+
+        _numMissao++;
+    }
+
+    fclose(pArq);
+}
 
 bool validarHora(int hora, int minuto)
 {
@@ -4164,6 +4332,15 @@ bool validarInteiro(char *str)
     }
 
     return check;
+}
+
+bool validaAlocacao(void *ptr)
+{
+    if (!ptr)
+    {
+        ERRO(-99);
+        exit(1);
+    }
 }
 
 bool validarChakra(int chakra)
@@ -4312,7 +4489,7 @@ void ERRO(int codigoErro)
     case -99:
         printf("**ERRO: FALHA NA ALOCACAO**\n");
         break;
-    
+
     case 404:
         printf("**ERRO: FALHA DE ABERTURA**");
         break;
