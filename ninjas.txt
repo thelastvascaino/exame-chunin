@@ -1,3 +1,4 @@
 link;ada;5;1;100;25;2
 adas;sdgs;3;1;25;25;2
 asd;asdfa;5;1;25;25;2
+marcio;familia delfino;7;1;100;19;7
