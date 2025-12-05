@@ -130,6 +130,10 @@ typedef struct
     TJutsu *jutsu_ninja;
     int chakra_ninja;
     Elementos *elemento_ninja;
+
+    //rereferenciar
+    char *jutsu_pertencente;
+    char *cla_pertencente;
 } TNinja;
 typedef struct
 {
@@ -138,6 +142,7 @@ typedef struct
     char *titulo_missao;
     char *lider_missao;
     TNinja **ninjas_missao;
+    char **ninjas_nomes;
     int qtd_ninjas;
     dificuldadeMissao dif_missao;
     statusMissao status;
@@ -220,17 +225,26 @@ void listarMissao(); // dispara função para listar missão
 void listarJutsu();  // dispara função para listar jutsu
 void listarCla();    // dispara função para listar clã
 
-/*<manipulação de arquivos>*/
+/*<salvar dados>*/
 void salvarTudo();      // dispara função para salvar dados
 void salvarNinjas();    // dispara função para salvar ninjas
 void salvarMissoes();   // dispara função para salvar missões
 void salvarJutsus();    // dispara função para salvar jutsus
 void salvarClas();      // dispara função para salvar clãs
+
+/*<carregar dados>*/
 void carregarTudo();    // dispara função para carregar todos
 void carregarNinjas();  // dispara função para carregar ninjas
 void carregarMissoes(); // dispara função para carregar missões
 void carregarJutsus();  // dispara função para carregar jutsus
 void carregarClas();    // dispara função para carregar clãs
+
+/*<rerefenciar dados>*/
+
+void rereferenciarMissao();  //rereferencia os dados da missão
+void rereferenciarNinja(); //rereferencia os dados do ninja
+void rereferenciarJutsu();  //rereferencia os dados do jutsu
+void rereferenciarCla();    //rereferencia os dados do clã
 
 /*<limpeza de memória>*/
 
@@ -239,6 +253,7 @@ void liberarNinja();    //dispara função para liberar memória de ninja
 void liberarMissao();   //dispara função para liberar memória de missão
 void liberarJutsu();    //dispara função para liberar memória de jutsu
 void liberarCla();      //dispara função para liberar memória de clã
+
 
 /*<controle de erros>*/
 void ERRO(int codigoErro);                      // exibe uma mensagem de erro
@@ -270,7 +285,7 @@ int main()
     SetConsoleOutputCP(65001);
     CLS 
 
-    carregarTudo();
+    //carregarTudo();
     
     int opcao = -1;
 
@@ -375,7 +390,7 @@ void opcaoMenu(int opcao)
 void menuNinja()
 {
     CLS
-        printf("-- Manter Ninja --\n");
+    printf("-- Manter Ninja --\n");
     printf("------------------------\n");
     printf("(1) - Incluir Ninja\n");
     printf("(2) - Alterar Ninja\n");
@@ -485,7 +500,7 @@ void lerOpcaoMissao()
 void menuJutsu()
 {
     CLS
-        printf("---MANTER JUTSU---\n");
+    printf("---MANTER JUTSU---\n");
     printf("------------------------\n");
     printf("(1) - Incluir Jutsu\n");
     printf("(2) - Alterar Jutsu\n");
@@ -749,7 +764,7 @@ void incluirNinja()
     _numNinjas++;
 
     CLS
-        printf("**Ninja cadastrado com sucesso!**\n");
+    printf("**Ninja cadastrado com sucesso!**\n");
     SPAUSE
 }
 
@@ -2249,7 +2264,7 @@ TNinja criarNinja()
 
         _cla[_numCla] = criarCla();
         _numCla++;
-        printf("**Clã criado com sucesso!**\n");
+        printf("\n**Clã criado com sucesso!**\n");
     }
 
     printf("\n--- CLÃS DISPONÍVEIS ---\n");
@@ -3579,7 +3594,7 @@ void listarNinja()
         switch (_ninja[i].hierarquia_ninja)
         {
         case estudante:
-            printf("🎓 Estudante\n");
+            printf("Estudante\n");
             break;
         case genin:
             printf("Genin\n");
@@ -3999,6 +4014,7 @@ bool validarData(int dia, int mes, int ano)
 void salvarNinjas()
 {
     FILE *pArq = fopen("ninjas.txt", "w");
+
     if (pArq == NULL)
     {
         ERRO(404);
@@ -4009,13 +4025,13 @@ void salvarNinjas()
     {
         fprintf(pArq, "%s;", _ninja[i].nome_ninja);
         fprintf(pArq, "%s;", _ninja[i].vila_ninja);
-        fprintf(pArq, "%d;%d;%d;%d;%d\n",
-                _ninja[i].hierarquia_ninja,
-                _ninja[i].status,
-                _ninja[i].chakra_ninja,
-                _ninja[i].data_nascimento.dia,
-                _ninja[i].data_nascimento.mes,
-                _ninja[i].data_nascimento.ano);
+        fprintf(pArq, "%s;", _ninja[i].titulo_ninja);
+        fprintf(pArq, "%d/%d/%d;", _ninja[i].data_nascimento.dia, _ninja[i].data_nascimento.mes, _ninja[i].data_nascimento.ano);
+        fprintf(pArq, "%d;", _ninja[i].status);
+        fprintf(pArq, "%d;", _ninja[i].hierarquia_ninja);
+        fprintf(pArq, "%d;", _ninja[i].chakra_ninja);
+        fprintf(pArq, "%s;", _ninja[i].cla);
+        fprintf(pArq, "%d;", _ninja[i].elemento_ninja);
     }
 
     fclose(pArq);
@@ -4276,6 +4292,61 @@ void carregarTudo()
     carregarMissoes();
     carregarJutsus();
     carregarClas();
+}
+
+void rereferenciarMissao()
+{
+    if(_numMissao > 0)
+    {
+        rereferenciarNinja();
+        rereferenciarJutsu();
+        rereferenciarCla();
+    }
+}
+
+void rereferenciarNinja()
+{
+    for(int i = 0; i < _numMissao; i++)
+    {
+        for(int j = 0; j < _missao[i].qtd_ninjas; j++)
+        {
+            for(int k = 0; k < _numNinjas; k++)
+            {
+                if(strcmp(_missao[i].ninjas_nomes[j], _ninja[k].nome_ninja) == 0)
+                {
+                    _missao[i].ninjas_missao[j] = &_ninja[k];
+                }
+            }
+        }
+    }
+}
+
+void rereferenciarJutsu()
+{
+    for(int i = 0; i < _numNinjas; i++)
+    {
+        for(int j = 0; j < _numJutsus; j++)
+        {
+            if(strcmp(_ninja[i].jutsu_pertencente, _jutsu[j].nome_jutsu) == 0)
+            {
+                _ninja[i].jutsu_ninja = &_jutsu[j];
+            }
+        }
+    }
+}
+
+void rereferenciarCla()
+{
+    for(int i = 0; i < _numNinjas; i++)
+    {
+        for(int j = 0; j < _numCla; i++)
+        {
+            if(strcmp(_ninja[i].cla_pertencente, _cla[j].nome_cla) == 0)
+            {
+                _ninja[i].cla = &_cla[j];
+            }
+        }
+    }
 }
 
 bool validarHora(int hora, int minuto)
